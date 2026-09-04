@@ -84,15 +84,6 @@ onMounted(load)
 
 <style scoped>
 .stats {
-  margin-bottom: 16px;
-}
-.stat-label {
-  font-size: 13px;
-  color: #909399;
-}
-.stat-value {
-  font-size: 28px;
-  font-weight: 700;
-  margin-top: 4px;
+  margin-bottom: 18px;
 }
 </style>
