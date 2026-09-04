@@ -140,6 +140,23 @@
 
 ---
 
+## 14. AfterValidator 抛 ValueError 导致 500（校验错误序列化失败）
+
+**现象**：给登录/注册加输入校验后，提交 SQL 注入载荷 `admin' OR '1'='1` 期望返回 422，结果却返回 500「服务器内部错误」。
+
+**根因**：校验器用 `AfterValidator` 抛出 `ValueError`，Pydantic 会把**原始异常对象**塞进 `exc.errors()` 的 `ctx` 字段（形如 `{"error": ValueError(...)}`）。而 `main.py` 的校验错误处理器直接 `detail=exc.errors()` 回传，JSON 序列化时遇到不可序列化的 `ValueError` 对象，抛 `TypeError: Object of type ValueError is not JSON serializable`，被兜底的 500 处理器接住。
+
+**解决**：
+1. 校验器改用 `PydanticCustomError("username_invalid", "中文提示")` 抛自定义错误——消息干净、类型可控、不带原始异常对象。
+2. `main.py` 的 `_validation_error` 处理器只回传 `loc/msg/type` 三个可序列化字段（顺便不再回传 `input`，避免把原始输入泄露给客户端）。
+
+**经验**：
+- `exc.errors()` 里的 `ctx` 可能包含非 JSON 可序列化的对象（validator 抛的原始异常、字节串等），不要直接 `json.dumps(exc.errors())`，要显式抽取字段。
+- 自定义校验错误用 `PydanticCustomError`，不要裸抛 `ValueError`（Pydantic 会给它加 "Value error, " 前缀且塞进 ctx）。
+- Windows 下 `uv run uvicorn --reload` 的 worker 重启不可靠（日志显示"检测到变更"却仍跑旧代码）；排查「改了代码但行为没变」时，先干净重启一次再下结论。
+
+---
+
 ## 总结
 
 | # | 问题 | 类型 | 一句话解法 |
@@ -157,3 +174,4 @@
 | 11 | naive/aware datetime | 跨库 | 统一存 naive UTC |
 | 12 | GBK 编码 txt | 数据 | 编码探测 UTF-8→GB18030 |
 | 13 | el-upload 手动上传 0 字节 | 前端 | 改用 :http-request |
+| 14 | AfterValidator 抛 ValueError 导致 500 | 校验 | PydanticCustomError + 只回传 loc/msg/type |

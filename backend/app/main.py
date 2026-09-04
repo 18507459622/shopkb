@@ -93,12 +93,19 @@ def create_app() -> FastAPI:
 
     @app.exception_handler(RequestValidationError)
     async def _validation_error(request: Request, exc: RequestValidationError) -> JSONResponse:
+        # 只回传可序列化且不敏感的字段：loc/msg/type。
+        # exc.errors() 里的 input/ctx/url 可能含原始输入或异常对象（如 ValueError），
+        # 直接序列化会 TypeError，也不该回传给客户端。
+        errors = [
+            {"loc": e.get("loc", []), "msg": e.get("msg", ""), "type": e.get("type", "")}
+            for e in exc.errors()
+        ]
         return JSONResponse(
             status_code=422,
             content=ErrorEnvelope(
                 code="VALIDATION_ERROR",
                 message="参数校验失败",
-                detail=exc.errors(),
+                detail=errors,
                 request_id=request_id_var.get(),
             ).model_dump(),
         )
