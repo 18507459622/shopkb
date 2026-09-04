@@ -1,0 +1,44 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+.eggs/
+build/
+dist/
+.mypy_cache/
+.ruff_cache/
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Node / frontend
+node_modules/
+frontend/dist/
+frontend/.vite/
+*.local
+
+# env & secrets
+.env
+.env.*
+!.env.example
+
+# data / runtime（backend 运行时的 SQLite/Milvus/上传文件；data/samples 是示例数据，需提交）
+backend/data/
+uploads/
+*.db
+*.sqlite3
+milvus_lite.db*
+
+# IDE
+.idea/
+.vscode/
+*.iml
+
+# OS
+.DS_Store
+Thumbs.db
+
+# logs
+*.log
