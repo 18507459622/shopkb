@@ -129,7 +129,17 @@ class ChatService:
         _, chunks = await pipeline.retrieve(content, user_questions)
         sources = [c.to_source() for c in chunks]
         if not chunks:
-            return NO_INFO_ANSWER, [], None, int((time.perf_counter() - start) * 1000)
+            # 无相关内容：LLM 兜底引导（聊天 + 引导回流），失败则回退固定话术
+            usage = None
+            try:
+                res = await pipeline.llm.ainvoke(
+                    pipeline.build_offtopic_messages(content, history)
+                )
+                answer = res.content or NO_INFO_ANSWER
+                usage = getattr(res, "usage_metadata", None)
+            except Exception:
+                answer = NO_INFO_ANSWER
+            return answer, [], usage, int((time.perf_counter() - start) * 1000)
         messages = pipeline.build_messages(content, chunks, history)
         res = await pipeline.llm.ainvoke(messages)
         answer, _ = sanitize_citations(res.content or "", len(chunks))
@@ -193,9 +203,24 @@ async def stream_chat(user_id: int, conv_id: int, content: str) -> AsyncGenerato
     answer: str
     usage: dict[str, Any] = {}
     if not chunks:
-        answer = NO_INFO_ANSWER
+        # 无相关内容：LLM 兜底引导（聊天 + 引导回流），失败则回退固定话术
         yield sse_event("citations", {"sources": []})
-        yield sse_event("token", {"delta": answer})
+        try:
+            parts: list[str] = []
+            async for chunk in pipeline.llm.astream(
+                pipeline.build_offtopic_messages(content, history)
+            ):
+                delta = chunk.content or ""
+                if delta:
+                    parts.append(delta)
+                    yield sse_event("token", {"delta": delta})
+                um = getattr(chunk, "usage_metadata", None)
+                if um:
+                    usage = dict(um)
+            answer = "".join(parts) or NO_INFO_ANSWER
+        except Exception:
+            answer = NO_INFO_ANSWER
+            yield sse_event("token", {"delta": answer})
     else:
         yield sse_event("citations", {"sources": sources})
         try:

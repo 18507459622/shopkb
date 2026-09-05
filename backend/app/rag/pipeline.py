@@ -22,6 +22,14 @@ RAG_SYSTEM_PROMPT = """你是电商商品知识库导购客服。请严格依据
 5. 引用来源时只在提供的编号内使用 [n] 标注（n 为来源编号）。
 6. 回答自包含、简洁，不依赖"如上文所述"。"""
 
+OFFTOPIC_SYSTEM_PROMPT = """你是电商商品知识库客服助手。当前用户的问题与知识库无关，或知识库中暂未收录相关内容。
+
+请用友好、自然的语气回应：
+1. 先简单接住用户的话题（可表达理解或礼貌回应），但绝不要编造商品价格、参数、库存、保修等信息。
+2. 委婉说明你主要擅长的是"电商商品咨询"（价格、参数、库存、售后政策、商品对比等）。
+3. 引导用户回到你的能力范围，给出 1-2 个具体可问的问题示例。
+4. 回答简短（1-3 句），不要长篇大论。"""
+
 NO_INFO_ANSWER = "抱歉，知识库中暂未收录与该问题相关的信息，无法准确回答。"
 
 # 离线守卫：问候/感谢/告别/自我认知 直接回复，不走 RAG（避免闲聊被"拒答"）
@@ -111,4 +119,20 @@ class RagPipeline:
         messages.append(
             HumanMessage(content=f"【知识库内容】\n{context}\n\n用户问题：{question}")
         )
+        return messages
+
+    def build_offtopic_messages(
+        self,
+        question: str,
+        history: list[dict[str, str]] | None = None,
+    ) -> list[BaseMessage]:
+        """无关问题/无检索结果时的兜底：友好接话 + 说明擅长范围 + 引导回流。"""
+        messages: list[BaseMessage] = [SystemMessage(content=OFFTOPIC_SYSTEM_PROMPT)]
+        if history:
+            for m in history[-6:]:
+                if m.get("role") == "user":
+                    messages.append(HumanMessage(content=m["content"]))
+                else:
+                    messages.append(SystemMessage(content=f"[助手回答] {m['content']}"))
+        messages.append(HumanMessage(content=question))
         return messages
