@@ -1,5 +1,5 @@
 <template>
-  <div class="chat-layout">
+  <div class="chat-layout" :class="{ 'sidebar-hidden': !sidebarVisible }">
     <!-- 左：会话列表 -->
     <aside class="session-sidebar">
       <div class="sidebar-top">
@@ -32,8 +32,17 @@
       </div>
     </aside>
 
+    <!-- 移动端侧栏遮罩 -->
+    <div v-if="isMobile && sidebarVisible" class="sidebar-backdrop" @click="sidebarVisible = false"></div>
+
     <!-- 中：消息区 -->
     <main class="chat-main">
+      <div class="chat-header">
+        <el-button class="sidebar-toggle" text @click="toggleSidebar">
+          <el-icon><Fold v-if="sidebarVisible" /><Expand v-else /></el-icon>
+        </el-button>
+        <span class="chat-title">{{ activeTitle }}</span>
+      </div>
       <div class="message-list" ref="listRef">
         <el-empty v-if="!store.activeMessages.length" description="开始提问吧" />
         <div v-for="(m, i) in store.activeMessages" :key="i" class="message" :class="m.role">
@@ -85,9 +94,9 @@
 </template>
 
 <script setup lang="ts">
-import { nextTick, onMounted, ref } from 'vue'
+import { computed, nextTick, onMounted, onUnmounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { Close } from '@element-plus/icons-vue'
+import { Close, Expand, Fold } from '@element-plus/icons-vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 
 import { streamChat } from '@/api/sse'
@@ -106,6 +115,22 @@ const listRef = ref<HTMLElement>()
 const drawerVisible = ref(false)
 const currentSource = ref<Source | null>(null)
 
+const sidebarVisible = ref(true)
+const isMobile = ref(false)
+
+const activeTitle = computed(() => {
+  const conv = store.conversations.find((c) => c.id === store.activeConversationId)
+  return conv?.title ?? '新对话'
+})
+
+function updateLayout() {
+  isMobile.value = window.innerWidth < 768
+}
+
+function toggleSidebar() {
+  sidebarVisible.value = !sidebarVisible.value
+}
+
 onMounted(async () => {
   await store.loadConversations()
   const sessionId = route.params.sessionId ? Number(route.params.sessionId) : null
@@ -117,6 +142,16 @@ onMounted(async () => {
     await store.createConversation()
     await router.replace(`/chat/${store.activeConversationId}`)
   }
+})
+
+onMounted(() => {
+  updateLayout()
+  if (isMobile.value) sidebarVisible.value = false
+  window.addEventListener('resize', updateLayout)
+})
+
+onUnmounted(() => {
+  window.removeEventListener('resize', updateLayout)
 })
 
 async function newConversation() {
@@ -234,6 +269,22 @@ async function send() {
   backdrop-filter: blur(18px) saturate(150%);
   border: 1px solid rgba(255, 255, 255, 0.7);
   box-shadow: var(--shadow);
+  transition: width 0.25s ease, opacity 0.2s ease;
+}
+.sidebar-hidden .session-sidebar {
+  width: 0;
+  opacity: 0;
+  pointer-events: none;
+  border: none;
+  box-shadow: none;
+}
+.sidebar-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 35;
+  background: rgba(15, 20, 40, 0.4);
+  -webkit-backdrop-filter: blur(2px);
+  backdrop-filter: blur(2px);
 }
 .sidebar-top {
   padding: 16px;
@@ -300,6 +351,29 @@ async function send() {
   backdrop-filter: blur(18px);
   border: 1px solid rgba(255, 255, 255, 0.7);
   box-shadow: var(--shadow);
+}
+.chat-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.35);
+}
+.sidebar-toggle {
+  font-size: 18px;
+  color: var(--ink-2);
+}
+.sidebar-toggle:hover {
+  color: var(--brand-blue);
+}
+.chat-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ink);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 .message-list {
   flex: 1;
@@ -378,5 +452,28 @@ async function send() {
   border-radius: 10px;
   white-space: pre-wrap;
   word-break: break-word;
+}
+
+@media (max-width: 768px) {
+  .chat-layout {
+    padding: 8px;
+    gap: 0;
+  }
+  .session-sidebar {
+    position: fixed;
+    left: 8px;
+    top: 8px;
+    bottom: 8px;
+    z-index: 40;
+    transition: transform 0.25s ease;
+  }
+  .sidebar-hidden .session-sidebar {
+    width: 280px;
+    opacity: 1;
+    border: 1px solid rgba(255, 255, 255, 0.7);
+    box-shadow: var(--shadow);
+    transform: translateX(calc(-100% - 24px));
+    pointer-events: none;
+  }
 }
 </style>
