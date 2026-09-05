@@ -3,6 +3,8 @@
 > 定位：可写进简历、经得起面试深挖的**生产级** LangChain RAG 项目，而非"能跑通的毕设"。
 > 本文档是系统设计的唯一权威（Single Source of Truth），所有技术选型均附理由（decision record），可作为开发蓝图，也可作为面试逐条讲解的决策记录。
 
+> **当前实现状态（截至 2026-09）**：核心链路已跑通，本地零基础设施即可运行（SQLite + Milvus Lite）。已实现：Auth 全套（argon2id/JWT/refresh 旋转/改密）、KB 上传入库（解析→切分→embed→Milvus）、混合检索 + 门控、流式 SSE + 结构化引文、多用户多会话持久化、前端「科技蓝紫玻璃拟态」UI、登录输入校验、无关问题 LLM 兜底引导。规划中：Redis/ARQ、bge 重排、可观测三件套、集成测试与离线 eval、CI/CD（见 §10）。
+
 ## 1. 目标与需求
 
 用 **LangChain** 开发一套**电商商品知识库 RAG 问答系统**，浏览器操作。用户提问商品相关问题（规格/价格/库存/售后等），系统**严格基于知识库**回答并**展示引用片段**。
@@ -20,7 +22,7 @@
 
 | 维度 | 选型 | 关键点 |
 |---|---|---|
-| 生成 LLM | DeepSeek `deepseek-chat`（OpenAI 兼容 `ChatOpenAI(base_url=api.deepseek.com)`） | temperature=0.1, streaming=True |
+| 生成 LLM | DeepSeek `deepseek-v4-flash`（OpenAI 兼容 `ChatOpenAI(base_url=api.deepseek.com)`） | temperature=0.1, streaming=True |
 | 向量化 | 通义 DashScope `text-embedding-v3`（1024 维，L2 归一） | 自写 `DashScopeTextEmbedding` 区分 document/query text_type |
 | 向量库 | Milvus 2.5 Standalone（pymilvus 2.5）｜本地降级 Milvus Lite | 显式 schema + BM25 Function 混合检索 |
 | 关系库 | MySQL 8.4（SQLAlchemy 2.0 **async** + asyncmy）｜本地降级 SQLite | 系统真源 |
@@ -136,7 +138,9 @@ shopkb/
 - 门控：sigmoid<0.35 丢弃；空→拒答分支。
 
 ### 6.5 Query 前处理（克制）
-离线守卫（闲聊直回）→ 多轮改写 → 高置信实体抽取（正则 SKU + 词典）→ 直接 embed。**跳过** HyDE / Multi-query / 独立 ML 分类器。
+离线守卫（问候/感谢/告别/身份认知 直接回复，零 LLM 调用）→ 多轮改写 → 高置信实体抽取（正则 SKU + 词典）→ 直接 embed。**跳过** HyDE / Multi-query / 独立 ML 分类器。
+
+**无关问题兜底**：检索门控后无结果时，不再硬拒答，而是走独立的「闲聊引导」提示词调用 LLM——友好接住话题 + 说明擅长范围 + 举例引导用户回到商品咨询（见 §6.7）。
 
 ### 6.6 多轮（检索与生成分离）
 - 检索侧：最近 6 条 + 当前问 → 自包含 query；启发式跳过；短句/代词句才改写；双路召回兜底。
@@ -145,6 +149,8 @@ shopkb/
 ### 6.7 生成与接地
 System prompt：只依据 context；数字逐字出自原文；不足→"知识库未收录"；引用仅编号内 [1][2]。
 接地五道：context 限窗口 / system 强约束 / 引文白名单 / 门控空 context 模板 / 数字后检。
+
+**双提示词**：命中知识库 → `RAG_SYSTEM_PROMPT`（严格接地）；门控后无结果 → `OFFTOPIC_SYSTEM_PROMPT`（闲聊引导 + 引导回流，仍禁止编造商品信息）。
 
 ### 6.8 引文（结构化数据）
 top6 编号注入；生成后引文清洗（仅保留真实编号）；持久化 sources_json。
@@ -165,7 +171,7 @@ top6 编号注入；生成后引文清洗（仅保留真实编号）；持久化
 
 **Auth**：JWT access(15min, PyJWT) + refresh(256-bit opaque, 只存 sha256, 旋转链, HttpOnly cookie 30d)；argon2id；RBAC；登录限速 5/min。
 
-**安全**：SQL 参数化；LLM prompt 用户文本作不可信数据；IDOR 靠 owner 限定；上传 MIME sniff + storage_key=uuid4；pydantic-settings 分组 + prod 坏配置 fail-fast；安全头齐全。
+**安全**：SQL 参数化（SQLAlchemy ORM）；**输入校验**（用户名白名单正则 `[A-Za-z0-9_一-龥]{3,64}` + 密码规则，Pydantic 在 API 边界完成，作为参数化之外的第二道防线）；LLM prompt 用户文本作不可信数据；IDOR 靠 owner 限定；上传 MIME sniff + storage_key=uuid4；pydantic-settings 分组 + prod 坏配置 fail-fast；安全头齐全。
 
 **API**：auth / KB(admin) / chat / health(/healthz /readyz /diagnostics)。
 
@@ -174,6 +180,7 @@ top6 编号注入；生成后引文清洗（仅保留真实编号）；持久化
 ## 8. 前端设计
 
 - feature-first 纵向切片；TS strict；**contract-first via OpenAPI**（openapi-typescript 生成类型 + CI 漂移门）+ zod 运行时校验。
+- 视觉：**科技蓝紫玻璃拟态**（glassmorphism 玻璃卡片 + 蓝紫渐变 #4F7CFF→#A855F7）；**每页独立背景色**（路由级切换）；Noto Sans SC 字体；**侧边栏可折叠 + 响应式**（<768px 滑出式 + 遮罩）。
 - Pinia 四 store（auth/chat/kb/app）；仅 app 持久化；refresh 只进 HttpOnly cookie。
 - 401 单飞行刷新；区分 401/403。
 - SSE 用 fetch + ReadableStream（不用 EventSource）；token 增量 rAF 合并 flush；看门狗；显式幂等重试。
