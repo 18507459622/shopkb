@@ -3,7 +3,7 @@
     <header class="app-header">
       <div class="brand" @click="router.push('/chat')">
         <span class="logo">🛒</span>
-        <span class="brand-name">商品知识库问答</span>
+        <span class="brand-name gradient-text">商品知识库问答</span>
       </div>
       <nav class="nav">
         <router-link to="/chat">问答</router-link>
@@ -52,8 +52,17 @@ async function logout() {
   background: rgba(255, 255, 255, 0.6);
   -webkit-backdrop-filter: blur(18px) saturate(150%);
   backdrop-filter: blur(18px) saturate(150%);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.6);
   box-shadow: 0 4px 24px rgba(80, 95, 180, 0.08);
+}
+.app-header::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--brand-blue), var(--brand-purple), transparent);
+  opacity: 0.5;
 }
 .brand {
   display: flex;
