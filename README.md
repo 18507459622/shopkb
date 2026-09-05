@@ -13,12 +13,15 @@
 - **知识库管理（仅 admin）**：上传 PDF/docx/txt/md/csv → 异步入库（解析→切分→向量化→写索引），状态轮询、重新入库、删除。
 - **流式输出**：SSE 流式回答 + 引用边流边出。
 - **用户管理（仅 admin）**：用户列表、启用/禁用、角色管理、统计看板。
+- **无关问题兜底引导**：与知识库无关的问题不再硬拒答，模型会友好接话、说明擅长范围并引导用户回到商品咨询。
+- **输入安全**：用户名白名单正则校验 + SQLAlchemy 参数化查询，从 API 边界到 ORM 双层防 SQL 注入/XSS。
+- **现代 UI**：科技蓝紫玻璃拟态、每页独立背景色、响应式布局、侧边栏可折叠、模型回复带表情。
 
 ## 技术栈
 
 | 层 | 选型 |
 |---|---|
-| 生成 | DeepSeek `deepseek-chat`（OpenAI 兼容） |
+| 生成 | DeepSeek `deepseek-v4-flash`（OpenAI 兼容） |
 | 向量化 | 通义 DashScope `text-embedding-v3`（1024 维） |
 | 向量库 | Milvus Standalone（本地降级 Milvus Lite） |
 | 关系库 | MySQL（本地降级 SQLite） |
@@ -77,7 +80,9 @@ docker compose up -d --build
 
 ```bash
 cd backend
-uv run pytest tests/unit -q          # 单元测试（无外部依赖）
+uv run pytest tests/unit -q          # 单元测试（30 个，无外部依赖）
+uv run pytest tests/unit --cov=app --cov-report=html  # 覆盖率报告（生成 htmlcov/）
+uv run ruff check app tests           # 静态检查
 ```
 
 ## 项目结构
