@@ -1,0 +1,26 @@
+{"id":"q01","question":"星辰 X1 Pro 的价格是多少？","answerable":true,"expected_docs":["智能手机.md"],"gold_answer":"12GB+256GB 版本 4999 元，16GB+512GB 版本 5699 元"}
+{"id":"q02","question":"星云 Note 5 的电池容量是多少？","answerable":true,"expected_docs":["智能手机.md"],"gold_answer":"6000mAh，支持 120W 有线快充"}
+{"id":"q03","question":"星域 Book 16 用的什么显卡？","answerable":true,"expected_docs":["笔记本电脑.md"],"gold_answer":"NVIDIA RTX 4060 8GB"}
+{"id":"q04","question":"星域 Air 13 的重量是多少？","answerable":true,"expected_docs":["笔记本电脑.md"],"gold_answer":"0.99kg"}
+{"id":"q05","question":"星河空调的质保政策是什么？","answerable":true,"expected_docs":["家用电器.md","售后服务政策.md"],"gold_answer":"整机保修 6 年，压缩机保修 10 年"}
+{"id":"q06","question":"星河滚筒洗衣机的价格是多少？","answerable":true,"expected_docs":["家用电器.md"],"gold_answer":"2899 元"}
+{"id":"q07","question":"退货运费由谁承担？","answerable":true,"expected_docs":["售后服务政策.md"],"gold_answer":"质量问题退换货运费由平台承担；无理由退货运费由买家承担"}
+{"id":"q08","question":"电子发票多久能开具？","answerable":true,"expected_docs":["售后服务政策.md"],"gold_answer":"确认收货后 7 个工作日内开具"}
+{"id":"q09","question":"星环 Watch S1 Pro 有没有 ECG 心电图功能？","answerable":true,"expected_docs":["智能手表.md"],"gold_answer":"有 ECG 心电图功能"}
+{"id":"q10","question":"星环 Watch Mini 多少钱？","answerable":true,"expected_docs":["智能手表.md"],"gold_answer":"199 元"}
+{"id":"q11","question":"星澜 Buds Pro 的降噪深度是多少？","answerable":true,"expected_docs":["无线耳机.md"],"gold_answer":"48dB"}
+{"id":"q12","question":"星澜 Headphone Max 的续航时间是多少？","answerable":true,"expected_docs":["无线耳机.md"],"gold_answer":"单次 40 小时"}
+{"id":"q13","question":"16GB+512GB 版本的星辰 X1 Pro 多少钱？","answerable":true,"expected_docs":["智能手机.md"],"gold_answer":"5699 元"}
+{"id":"q14","question":"哪款笔记本电脑价格最高？","answerable":true,"expected_docs":["笔记本电脑.md"],"gold_answer":"星域 Pro 17，18999 元"}
+{"id":"q15","question":"手机类产品的保修期是多久？","answerable":true,"expected_docs":["售后服务政策.md","智能手机.md"],"gold_answer":"整机保修 1 年"}
+{"id":"q16","question":"星河空气净化器适合多大面积的房间？","answerable":true,"expected_docs":["家用电器.md"],"gold_answer":"60 平方米"}
+{"id":"q17","question":"星澜 Buds Air 是入耳式还是半入耳式？","answerable":true,"expected_docs":["无线耳机.md"],"gold_answer":"半入耳式真无线"}
+{"id":"q18","question":"星环 Watch S1 的续航时间是多少？","answerable":true,"expected_docs":["智能手表.md"],"gold_answer":"典型模式 14 天"}
+{"id":"q19","question":"星域 Book 14 有哪些接口？","answerable":true,"expected_docs":["笔记本电脑.md"],"gold_answer":"2×USB-C（雷电4）、1×USB-A、HDMI、3.5mm"}
+{"id":"q20","question":"星辰 X1 Lite 用的什么处理器？","answerable":true,"expected_docs":["智能手机.md"],"gold_answer":"骁龙 7 Gen 3"}
+{"id":"q21","question":"你们有卖智能眼镜吗？","answerable":false,"expected_docs":[],"gold_answer":""}
+{"id":"q22","question":"这款空调一个月要多少电费？","answerable":false,"expected_docs":[],"gold_answer":""}
+{"id":"q23","question":"星域 Book 16 支不支持触控屏幕？","answerable":false,"expected_docs":[],"gold_answer":""}
+{"id":"q24","question":"星辰 X1 Pro 是哪一年发布的？","answerable":false,"expected_docs":[],"gold_answer":""}
+{"id":"q25","question":"智能手表的表带可以单独购买吗？","answerable":false,"expected_docs":[],"gold_answer":""}
+{"id":"q26","question":"星澜耳机的音质测评得分是多少？","answerable":false,"expected_docs":[],"gold_answer":""}
