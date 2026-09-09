@@ -2,9 +2,24 @@ import type { Source } from '@/types/api'
 
 import { getAccessToken } from './http'
 
+export interface ClarifyPayload {
+  question: string
+  category: string | null
+  candidates: string[]
+}
+
+export interface RetrievalPayload {
+  query: string
+  rewritten: boolean
+  mode: string
+  sources: Source[]
+}
+
 export interface StreamHandlers {
   onToken: (delta: string) => void
   onCitations: (sources: Source[]) => void
+  onClarify: (payload: ClarifyPayload) => void
+  onRetrieval: (payload: RetrievalPayload) => void
   onDone: (data: { message_id: number; sources: Source[] }) => void
   onError: (code: string, message: string) => void
 }
@@ -73,6 +88,12 @@ export async function streamChat(
           break
         case 'citations':
           handlers.onCitations((payload.sources as Source[]) ?? [])
+          break
+        case 'clarify':
+          handlers.onClarify(payload as unknown as ClarifyPayload)
+          break
+        case 'retrieval':
+          handlers.onRetrieval(payload as unknown as RetrievalPayload)
           break
         case 'done':
           handlers.onDone(payload as unknown as { message_id: number; sources: Source[] })

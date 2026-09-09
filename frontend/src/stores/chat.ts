@@ -3,8 +3,22 @@ import { defineStore } from 'pinia'
 import { chatApi } from '@/api'
 import type { ChatMessage, Conversation, Source } from '@/types/api'
 
+export interface ClarifyInfo {
+  category: string | null
+  candidates: string[]
+}
+
+export interface RetrievalInfo {
+  query: string
+  rewritten: boolean
+  mode: string
+  sources: Source[]
+}
+
 export interface UiMessage extends ChatMessage {
   sources: Source[] | null
+  clarify?: ClarifyInfo
+  retrieval?: RetrievalInfo
 }
 
 export const useChatStore = defineStore('chat', {
@@ -79,6 +93,16 @@ export const useChatStore = defineStore('chat', {
       const list = this.messages[convId]
       if (!list || !list[index]) return
       list[index] = { ...list[index]!, id }
+    },
+    setAssistantClarify(convId: number, index: number, question: string, clarify: ClarifyInfo) {
+      const list = this.messages[convId]
+      if (!list || !list[index]) return
+      list[index] = { ...list[index]!, content: question, sources: [], clarify }
+    },
+    setAssistantRetrieval(convId: number, index: number, retrieval: RetrievalInfo) {
+      const list = this.messages[convId]
+      if (!list || !list[index]) return
+      list[index] = { ...list[index]!, retrieval, sources: retrieval.sources }
     },
   },
 })

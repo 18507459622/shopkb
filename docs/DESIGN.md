@@ -3,7 +3,7 @@
 > 定位：可写进简历、经得起面试深挖的**生产级** LangChain RAG 项目，而非"能跑通的毕设"。
 > 本文档是系统设计的唯一权威（Single Source of Truth），所有技术选型均附理由（decision record），可作为开发蓝图，也可作为面试逐条讲解的决策记录。
 
-> **当前实现状态（截至 2026-09）**：核心链路已跑通，本地零基础设施即可运行（SQLite + Milvus Lite）。已实现：Auth 全套（argon2id/JWT/refresh 旋转/改密）、KB 上传入库（解析→切分→embed→Milvus）、混合检索 + 门控、流式 SSE + 结构化引文、多用户多会话持久化、前端「科技蓝紫玻璃拟态」UI、登录输入校验、无关问题 LLM 兜底引导。规划中：Redis/ARQ、bge 重排、可观测三件套、集成测试与离线 eval、CI/CD（见 §10）。
+> **当前实现状态（截至 2026-09）**：核心链路已跑通，本地零基础设施即可运行（SQLite + Milvus Lite）。已实现：Auth 全套（argon2id/JWT/refresh 旋转/改密）、KB 上传入库（解析→切分→embed→Milvus）、混合检索 + 门控、流式 SSE + 结构化引文、多用户多会话持久化、前端「科技蓝紫玻璃拟态」UI、登录输入校验、无关问题 LLM 兜底引导、歧义追问澄清、检索过程可视化。规划中：Redis/ARQ、bge 重排、可观测三件套、集成测试与离线 eval、CI/CD（见 §10）。
 
 ## 1. 目标与需求
 
@@ -142,6 +142,8 @@ shopkb/
 
 **无关问题兜底**：检索门控后无结果时，不再硬拒答，而是走独立的「闲聊引导」提示词调用 LLM——友好接住话题 + 说明擅长范围 + 举例引导用户回到商品咨询（见 §6.7）。
 
+**歧义追问（clarify）**：命中品类词但未指定具体商品（如「手机多少钱」）时，规则 + 静态商品词典检测歧义 → 返回候选追问（一次性，配合多轮改写闭环），不猜错、不编造。见 `app/rag/clarifier.py`。
+
 ### 6.6 多轮（检索与生成分离）
 - 检索侧：最近 6 条 + 当前问 → 自包含 query；启发式跳过；短句/代词句才改写；双路召回兜底。
 - 生成侧：最近 3 轮 QA + 当前问并入 prompt。
@@ -175,7 +177,7 @@ top6 编号注入；生成后引文清洗（仅保留真实编号）；持久化
 
 **API**：auth / KB(admin) / chat / health(/healthz /readyz /diagnostics)。
 
-**SSE 线协议**：`POST /api/v1/conversations/{id}/stream`；named events start/token/citations/usage/done/error；心跳 ~15s；断连持久化 aborted。
+**SSE 线协议**：`POST /api/v1/conversations/{id}/stream`；named events start/retrieval/citations/clarify/token/usage/done/error；心跳 ~15s；断连持久化 aborted。
 
 ## 8. 前端设计
 
@@ -185,6 +187,7 @@ top6 编号注入；生成后引文清洗（仅保留真实编号）；持久化
 - 401 单飞行刷新；区分 401/403。
 - SSE 用 fetch + ReadableStream（不用 EventSource）；token 增量 rAF 合并 flush；看门狗；显式幂等重试。
 - Chat 三栏 UI；markdown 消毒 + GFM 表格 + `[n]` 后处理；流式期间不逐帧重编译。
+- 检索过程可视化：每条回答下方展示「🔍 检索 query + 改写标记 + 命中片段相关度条」，回答可追溯（呼应 §9 可观测）。
 - KB 管理：状态轮询 useDocStatusPoller；ChunkViewer 停用坏块。
 - Vite dev proxy streaming-safe；prod nginx proxy_buffering off。
 

@@ -18,6 +18,7 @@ from app.core.database import get_session_factory
 from app.core.exceptions import ConversationNotFoundError, NotFoundError
 from app.models import Conversation, Message, User
 from app.rag.citation import sanitize_citations
+from app.rag.clarifier import detect_clarify
 from app.rag.pipeline import NO_INFO_ANSWER, RagPipeline, get_direct_reply
 
 from .repositories import ConversationRepository, FeedbackRepository, MessageRepository
@@ -126,7 +127,10 @@ class ChatService:
     async def _generate(self, content: str, history: list[dict], user_questions: list[str]):
         pipeline = RagPipeline()
         start = time.perf_counter()
-        _, chunks = await pipeline.retrieve(content, user_questions)
+        query, chunks = await pipeline.retrieve(content, user_questions)
+        clarify = detect_clarify(query, user_questions)
+        if clarify:
+            return clarify.question, [], None, int((time.perf_counter() - start) * 1000)
         sources = [c.to_source() for c in chunks]
         if not chunks:
             # 无相关内容：LLM 兜底引导（聊天 + 引导回流），失败则回退固定话术
@@ -193,11 +197,39 @@ async def stream_chat(user_id: int, conv_id: int, content: str) -> AsyncGenerato
 
     # 阶段2：检索
     try:
-        _, chunks = await pipeline.retrieve(content, user_questions)
+        query, chunks = await pipeline.retrieve(content, user_questions)
     except Exception as exc:  # noqa: BLE001
         yield sse_event("error", {"code": "RETRIEVAL_ERROR", "message": str(exc)[:200]})
         return
     sources = [c.to_source() for c in chunks]
+
+    # 阶段2.5：歧义追问（query 命中品类但未指定具体商品）
+    clarify = detect_clarify(query, user_questions)
+    if clarify:
+        yield sse_event("clarify", {
+            "question": clarify.question,
+            "category": clarify.category,
+            "candidates": clarify.candidates,
+        })
+        async with factory() as db:
+            assistant_msg = await MessageRepository(db).create(
+                conv_id, "assistant", clarify.question, status="complete",
+                model=settings.llm_model, sources_json=[],
+            )
+            conv = await db.get(Conversation, conv_id)
+            if conv is not None:
+                conv.last_message_at = utcnow()
+            await db.commit()
+            yield sse_event("done", {"message_id": assistant_msg.id, "sources": []})
+        return
+
+    # 阶段2.6：检索过程可视化（暴露改写 query + 检索模式 + 命中片段与相关度）
+    yield sse_event("retrieval", {
+        "query": query,
+        "rewritten": bool(query != content),
+        "mode": "hybrid" if pipeline.retriever.store.supports_sparse else "dense",
+        "sources": sources,
+    })
 
     # 阶段3：生成
     answer: str

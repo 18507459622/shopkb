@@ -50,6 +50,22 @@
           <div class="bubble">
             <div v-if="m.role === 'assistant'" class="markdown-body" v-html="renderMarkdown(m.content)"></div>
             <div v-else class="plain">{{ m.content }}</div>
+            <div v-if="m.retrieval" class="retrieval-box">
+              <div class="retrieval-header">
+                <span class="retrieval-query">🔍 {{ m.retrieval.query }}</span>
+                <el-tag v-if="m.retrieval.rewritten" size="small" type="warning">已改写</el-tag>
+                <el-tag size="small" type="info">{{ m.retrieval.mode === 'hybrid' ? '混合检索' : '向量检索' }}</el-tag>
+              </div>
+              <div v-if="m.retrieval.sources.length" class="retrieval-sources">
+                <div v-for="(s, i) in m.retrieval.sources" :key="s.chunk_id || i" class="retrieval-source">
+                  <div class="rs-top">
+                    <span class="rs-name">[{{ i + 1 }}] {{ s.doc_title }}</span>
+                    <span class="rs-score">{{ scoreWidth(s.score) }}</span>
+                  </div>
+                </div>
+              </div>
+              <div v-else class="retrieval-empty">未命中相关片段</div>
+            </div>
             <div v-if="m.sources && m.sources.length" class="sources">
               <span class="src-label">引用：</span>
               <el-tag
@@ -62,7 +78,19 @@
                 [{{ idx + 1 }}] {{ s.doc_title }}{{ s.page ? ` P${s.page}` : '' }}
               </el-tag>
             </div>
+            <div v-if="m.clarify && m.clarify.candidates.length" class="clarify-chips">
+              <span class="clarify-label">试试点选：</span>
+              <el-tag
+                v-for="c in m.clarify.candidates"
+                :key="c"
+                class="clarify-chip"
+                @click="pickCandidate(c)"
+              >{{ c }}</el-tag>
+            </div>
           </div>
+        </div>
+        <div v-if="store.streaming" class="thinking-bar">
+          <div class="thinking-bar-fill"></div>
         </div>
       </div>
       <div class="composer">
@@ -176,6 +204,14 @@ function openSource(s: Source) {
   drawerVisible.value = true
 }
 
+function pickCandidate(name: string) {
+  input.value = name + ' '
+}
+
+function scoreWidth(score: number) {
+  return Math.min(100, Math.max(0, score * 100)).toFixed(0) + '%'
+}
+
 function onUserCommand(cmd: string) {
   if (cmd === 'kb') router.push('/admin/kb')
   else if (cmd === 'users') router.push('/admin/users')
@@ -227,6 +263,21 @@ async function send() {
         onCitations: (s) => {
           sources = s
           store.updateAssistant(convId, idx, answer, sources)
+        },
+        onClarify: (payload) => {
+          store.setAssistantClarify(convId, idx, payload.question, {
+            category: payload.category,
+            candidates: payload.candidates,
+          })
+          scrollToBottom()
+        },
+        onRetrieval: (payload) => {
+          store.setAssistantRetrieval(convId, idx, {
+            query: payload.query,
+            rewritten: payload.rewritten,
+            mode: payload.mode,
+            sources: payload.sources,
+          })
         },
         onDone: (data) => {
           store.finalizeAssistant(convId, idx, data.message_id)
@@ -437,6 +488,94 @@ async function send() {
 }
 .src-chip {
   cursor: pointer;
+}
+.clarify-chips {
+  margin-top: 10px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+}
+.clarify-label {
+  font-size: 12px;
+  color: var(--ink-3);
+}
+.clarify-chip {
+  cursor: pointer;
+}
+.clarify-chip:hover {
+  background: var(--brand-blue);
+  color: #fff;
+}
+.retrieval-box {
+  margin-top: 10px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: rgba(99, 110, 160, 0.06);
+  border: 1px solid rgba(99, 110, 160, 0.12);
+}
+.retrieval-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+.retrieval-query {
+  font-size: 12px;
+  color: var(--ink-2);
+  font-weight: 500;
+  word-break: break-all;
+}
+.retrieval-sources {
+  margin-top: 8px;
+}
+.retrieval-source {
+  margin-top: 6px;
+}
+.rs-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 12px;
+}
+.rs-name {
+  color: var(--ink-2);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.rs-score {
+  color: var(--brand-blue);
+  font-weight: 600;
+  flex-shrink: 0;
+}
+.retrieval-empty {
+  margin-top: 6px;
+  font-size: 12px;
+  color: var(--ink-3);
+}
+.thinking-bar {
+  height: 4px;
+  width: 180px;
+  margin: 14px 0 14px 52px;
+  border-radius: 2px;
+  background: rgba(99, 110, 160, 0.15);
+  overflow: hidden;
+}
+.thinking-bar-fill {
+  height: 100%;
+  width: 45%;
+  border-radius: 2px;
+  background: var(--brand-gradient);
+  animation: thinking-slide 1.2s ease-in-out infinite;
+}
+@keyframes thinking-slide {
+  0% {
+    transform: translateX(-120%);
+  }
+  100% {
+    transform: translateX(320%);
+  }
 }
 .composer {
   display: flex;
