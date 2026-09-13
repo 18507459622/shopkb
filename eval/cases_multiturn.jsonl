@@ -1,0 +1,8 @@
+{"id":"mt01","history":["星辰 X1 Pro 的价格是多少？"],"question":"它的电池容量呢？","expected_docs":["智能手机.md"],"expect_keywords":["5500mAh"]}
+{"id":"mt02","history":["星域 Book 16 用的什么显卡？"],"question":"那它的重量是多少？","expected_docs":["笔记本电脑.md"],"expect_keywords":["1.99kg"]}
+{"id":"mt03","history":["星澜 Buds Pro 的降噪深度是多少？"],"question":"那续航呢？","expected_docs":["无线耳机.md"],"expect_keywords":["36 小时"]}
+{"id":"mt04","history":["星环 Watch S1 的续航时间是多少？"],"question":"星环 Watch Mini 多少钱？","expected_docs":["智能手表.md"],"expect_keywords":["199"]}
+{"id":"mt05","history":["星河智能变频空调 1.5 匹多少钱？"],"question":"那滚筒洗衣机呢？","expected_docs":["家用电器.md"],"expect_keywords":["2899"]}
+{"id":"mt06","history":["退货运费由谁承担？"],"question":"那质量问题换货呢？","expected_docs":["售后服务政策.md"],"expect_keywords":["15 天"]}
+{"id":"mt07","history":["星河空气净化器适合多大面积的房间？"],"question":"它多少钱？","expected_docs":["家用电器.md"],"expect_keywords":["1299"]}
+{"id":"mt08","history":["星域 Pad Pro 12.9 的价格是多少？"],"question":"那它的重量呢？","expected_docs":["平板电脑.md"],"expect_keywords":["682g"]}

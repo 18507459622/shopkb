@@ -1,0 +1,10 @@
+{"id":"cl01","question":"手机多少钱？","expect_clarify":true,"expect_category":"手机"}
+{"id":"cl02","question":"星辰 X1 Pro 多少钱？","expect_clarify":false}
+{"id":"cl03","question":"耳机怎么选？","expect_clarify":true,"expect_category":"耳机"}
+{"id":"cl04","question":"笔记本有什么推荐？","expect_clarify":true,"expect_category":"笔记本"}
+{"id":"cl05","question":"空调的保修是多久？","expect_clarify":false}
+{"id":"cl06","question":"多少钱？","expect_clarify":true}
+{"id":"cl07","question":"多少钱？","history":["星辰 X1 Pro 的价格是多少？"],"expect_clarify":false}
+{"id":"cl08","question":"星澜 Buds Pro 的降噪深度是多少？","expect_clarify":false}
+{"id":"cl09","question":"手表有什么型号？","expect_clarify":true,"expect_category":"手表"}
+{"id":"cl10","question":"星云 Note 5 的电池容量是多少？","expect_clarify":false}

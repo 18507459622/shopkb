@@ -155,6 +155,62 @@
 - 自定义校验错误用 `PydanticCustomError`，不要裸抛 `ValueError`（Pydantic 会给它加 "Value error, " 前缀且塞进 ctx）。
 - Windows 下 `uv run uvicorn --reload` 的 worker 重启不可靠（日志显示"检测到变更"却仍跑旧代码）；排查「改了代码但行为没变」时，先干净重启一次再下结论。
 
+## 15. 混合检索从未实测导致的隐藏缺陷：门控量纲错误
+
+**现象**：把检索切到支持 BM25 的 Milvus（Standalone / Zilliz Cloud）后，混合检索**永远返回空结果** ——
+门控之后一条不剩，接口表现为"知识库里没有相关内容"。
+
+**根因**：门控常量 `GATE_THRESHOLD = 0.35` 是按 **dense 相似度**（IP/余弦，值域约 0–1）定的；
+而混合检索走 `RRFRanker`，返回的是 **RRF 分数**（≈ 1/(60+rank)，典型值 0.01–0.03）。
+`Retriever` 早期实现不区分检索模式，无差别执行 `if score < GATE_THRESHOLD: continue`，
+于是把所有 RRF 结果全部过滤掉。
+
+**为什么长期没被发现**：本地开发用的是 Milvus Lite，**只支持 dense、不支持 sparse/BM25**，
+所以 `hybrid_search` 这条分支从未被执行过 —— 缺陷藏在"从未跑过的代码路径"里。
+
+**解决**：`Retriever.retrieve` 增加 `mode`（auto / dense / hybrid），**门控只在 dense 模式下生效**；
+hybrid 模式交给 ranker 排序 + top_k 截断。并补回归测试
+（`tests/unit/test_retriever.py::test_hybrid_mode_does_not_apply_similarity_gate`）。
+
+**经验**：
+- **门控/阈值是量纲相关的**：换检索算法就要重新审视阈值是否还适用（相似度 ≠ 融合分数 ≠ 距离）。
+- "写了但没跑过的分支"等于没有验证 —— 宣称的能力必须有一条真实跑通的路径 + 一个数字，
+  否则它只是文档里的一句话（这正是 `eval/hybrid_compare.py` 存在的意义）。
+
+## 16. 同一条「从未执行过的分支」里连环爆出的 4 个缺陷
+
+**背景**：接着 #15 —— 把检索切到 Zilliz Cloud 后，混合检索分支第一次真正被执行，
+在修掉门控量纲问题之后，又连续撞上 4 个缺陷（都是"本地只有 dense 时永远不会触发"的类型）。
+
+**现象与根因（按暴露顺序）**：
+
+1. `BM25 function input field must set enable_analyzer to true`
+   —— 作为 BM25 输入的 `text` 字段必须显式 `enable_analyzer=True`；
+   且中文语料要指定分词器（`jieba`），否则标准分词器按空白切分，中文整句变成一个 token，BM25 形同失效。
+
+2. `index metric type of BM25 function output field must be BM25, got IP`
+   —— 稀疏索引的 `metric_type` 必须是 `BM25`，沿用 dense 的 `IP` 会被拒绝。
+   （教训：**索引的 metric 与字段的语义绑定**，不能照抄另一路的配置。）
+
+3. `multiple anns_fields exist, please specify a anns_field in search_params`
+   —— 集合里一旦同时有 `dense_vector` 与 `sparse_vector`，dense 检索就必须显式指定查哪个字段。
+   单向量字段时省略 `anns_field` 也能跑，所以这个错误只在加了 BM25 之后才出现。
+
+4. `TypeError: MilvusClient.hybrid_search() missing 1 required positional argument: 'ranker'`
+   —— pymilvus 2.6 把融合器参数从 `rerank` 改名为 `ranker`；项目依赖范围是 `>=2.5,<3.0`，
+   两个版本参数名不同，最后用**运行时签名探测**兼容（`inspect.signature`）。
+
+**解决**：逐个修复，并把每条约束都写成单测钉住
+（`tests/unit/test_vectorstore_schema.py`：分析器开关、分词器、两类 metric、`anns_field`），
+避免"下次换集群又踩一遍"。
+
+**经验**：
+- **"写了但没跑过的分支"是缺陷温床**：一条分支从落地到首次真实执行之间，可以累积多个致命错误，
+  而且它们会**串行暴露**（修一个才看得见下一个），排查成本远高于边写边验证。
+- **配置项要按语义分路**，不要跨路复用：dense 用 IP、BM25 用 BM25；本地省略 `anns_field`、多字段必须指定。
+- **依赖范围跨大版本时用运行时探测**，别赌参数名不变（`rerank` → `ranker` 就是活例）。
+- 这类问题的正确预防手段不是"更小心"，而是**尽早给这条路径一个真实的执行环境**（本次是 Zilliz Cloud 免费实例）。
+
 ---
 
 ## 总结
@@ -175,3 +231,5 @@
 | 12 | GBK 编码 txt | 数据 | 编码探测 UTF-8→GB18030 |
 | 13 | el-upload 手动上传 0 字节 | 前端 | 改用 :http-request |
 | 14 | AfterValidator 抛 ValueError 导致 500 | 校验 | PydanticCustomError + 只回传 loc/msg/type |
+| 15 | 混合检索从未实测 | 检索 | 门控量纲：RRF 分数不套相似度阈值，补 mode 区分 + 回归测试 |
+| 16 | 同一分支连环 4 缺陷 | 检索 | enable_analyzer / BM25 metric / anns_field / ranker 参数名，全部补单测 |

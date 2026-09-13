@@ -1,0 +1,172 @@
+{"id": "h001", "question": "星辰 X1 的处理器是多少？", "answerable": true, "expected_docs": ["星辰X1.md"], "gold_answer": "骁龙 7 Gen 3"}
+{"id": "h002", "question": "星辰 X1 的电池是多少？", "answerable": true, "expected_docs": ["星辰X1.md"], "gold_answer": "6200mAh"}
+{"id": "h003", "question": "星辰 X1 的质保年限是多少？", "answerable": true, "expected_docs": ["星辰X1.md"], "gold_answer": "整机保修 2 年"}
+{"id": "h004", "question": "星辰 X2 的内存与存储是多少？", "answerable": true, "expected_docs": ["星辰X2.md"], "gold_answer": "16GB + 512GB"}
+{"id": "h005", "question": "星辰 X2 的快充是多少？", "answerable": true, "expected_docs": ["星辰X2.md"], "gold_answer": "支持 33W 有线快充"}
+{"id": "h006", "question": "星辰 X2 的快充是多少？", "answerable": true, "expected_docs": ["星辰X2.md"], "gold_answer": "支持 33W 有线快充"}
+{"id": "h007", "question": "星辰 X3 的快充是多少？", "answerable": true, "expected_docs": ["星辰X3.md"], "gold_answer": "支持 100W 有线快充"}
+{"id": "h008", "question": "星辰 X3 的价格是多少？", "answerable": true, "expected_docs": ["星辰X3.md"], "gold_answer": "6999 元"}
+{"id": "h009", "question": "星辰 X3 的重量是多少？", "answerable": true, "expected_docs": ["星辰X3.md"], "gold_answer": "178g"}
+{"id": "h010", "question": "星云 Note 的处理器是多少？", "answerable": true, "expected_docs": ["星云Note.md"], "gold_answer": "骁龙 8 Gen 3"}
+{"id": "h011", "question": "星云 Note 的价格是多少？", "answerable": true, "expected_docs": ["星云Note.md"], "gold_answer": "2299 元"}
+{"id": "h012", "question": "星云 Note 的重量是多少？", "answerable": true, "expected_docs": ["星云Note.md"], "gold_answer": "212g"}
+{"id": "h013", "question": "星云 Fold 的重量是多少？", "answerable": true, "expected_docs": ["星云Fold.md"], "gold_answer": "178g"}
+{"id": "h014", "question": "星云 Fold 的屏幕是多少？", "answerable": true, "expected_docs": ["星云Fold.md"], "gold_answer": "6.5 英寸 LTPO OLED，90Hz 刷新率"}
+{"id": "h015", "question": "星云 Fold 的质保年限是多少？", "answerable": true, "expected_docs": ["星云Fold.md"], "gold_answer": "整机保修 1 年"}
+{"id": "h016", "question": "星域 Book 的价格是多少？", "answerable": true, "expected_docs": ["星域Book.md"], "gold_answer": "8999 元"}
+{"id": "h017", "question": "星域 Book 的屏幕是多少？", "answerable": true, "expected_docs": ["星域Book.md"], "gold_answer": "15.6 英寸 2.8K，120Hz"}
+{"id": "h018", "question": "星域 Book 的屏幕是多少？", "answerable": true, "expected_docs": ["星域Book.md"], "gold_answer": "15.6 英寸 2.8K，120Hz"}
+{"id": "h019", "question": "星域 Pad 的电池是多少？", "answerable": true, "expected_docs": ["星域Pad.md"], "gold_answer": "11200mAh"}
+{"id": "h020", "question": "星域 Pad 的重量是多少？", "answerable": true, "expected_docs": ["星域Pad.md"], "gold_answer": "460g"}
+{"id": "h021", "question": "星域 Pad 的价格是多少？", "answerable": true, "expected_docs": ["星域Pad.md"], "gold_answer": "6299 元"}
+{"id": "h022", "question": "星澜 Buds 的降噪深度是多少？", "answerable": true, "expected_docs": ["星澜Buds.md"], "gold_answer": "35dB"}
+{"id": "h023", "question": "星澜 Buds 的防水等级是多少？", "answerable": true, "expected_docs": ["星澜Buds.md"], "gold_answer": "IPX4"}
+{"id": "h024", "question": "星澜 Buds 的续航是多少？", "answerable": true, "expected_docs": ["星澜Buds.md"], "gold_answer": "单次 40 小时"}
+{"id": "h025", "question": "星澜 Headphone 的防水等级是多少？", "answerable": true, "expected_docs": ["星澜Headphone.md"], "gold_answer": "IP54"}
+{"id": "h026", "question": "星澜 Headphone 的质保年限是多少？", "answerable": true, "expected_docs": ["星澜Headphone.md"], "gold_answer": "整机保修 2 年"}
+{"id": "h027", "question": "星澜 Headphone 的防水等级是多少？", "answerable": true, "expected_docs": ["星澜Headphone.md"], "gold_answer": "IP54"}
+{"id": "h028", "question": "星澜 Sound 的扬声器是多少？", "answerable": true, "expected_docs": ["星澜Sound.md"], "gold_answer": "60W 输出"}
+{"id": "h029", "question": "星澜 Sound 的价格是多少？", "answerable": true, "expected_docs": ["星澜Sound.md"], "gold_answer": "699 元"}
+{"id": "h030", "question": "星澜 Sound 的质保年限是多少？", "answerable": true, "expected_docs": ["星澜Sound.md"], "gold_answer": "整机保修 1 年"}
+{"id": "h031", "question": "星环 Watch 的质保年限是多少？", "answerable": true, "expected_docs": ["星环Watch.md"], "gold_answer": "整机保修 1 年"}
+{"id": "h032", "question": "星环 Watch 的屏幕是多少？", "answerable": true, "expected_docs": ["星环Watch.md"], "gold_answer": "1.43 英寸 AMOLED"}
+{"id": "h033", "question": "星环 Watch 的屏幕是多少？", "answerable": true, "expected_docs": ["星环Watch.md"], "gold_answer": "1.43 英寸 AMOLED"}
+{"id": "h034", "question": "星河 空调 的噪音是多少？", "answerable": true, "expected_docs": ["星河空调.md"], "gold_answer": "最低 33 分贝"}
+{"id": "h035", "question": "星河 空调 的能效等级是多少？", "answerable": true, "expected_docs": ["星河空调.md"], "gold_answer": "二级能效"}
+{"id": "h036", "question": "星河 空调 的功率是多少？", "answerable": true, "expected_docs": ["星河空调.md"], "gold_answer": "3500W"}
+{"id": "h037", "question": "星河 洗衣机 的价格是多少？", "answerable": true, "expected_docs": ["星河洗衣机.md"], "gold_answer": "3299 元"}
+{"id": "h038", "question": "星河 洗衣机 的价格是多少？", "answerable": true, "expected_docs": ["星河洗衣机.md"], "gold_answer": "3299 元"}
+{"id": "h039", "question": "星河 洗衣机 的质保年限是多少？", "answerable": true, "expected_docs": ["星河洗衣机.md"], "gold_answer": "整机保修 1 年"}
+{"id": "h040", "question": "星河 净化器 的功率是多少？", "answerable": true, "expected_docs": ["星河净化器.md"], "gold_answer": "3500W"}
+{"id": "h041", "question": "星河 净化器 的能效等级是多少？", "answerable": true, "expected_docs": ["星河净化器.md"], "gold_answer": "二级能效"}
+{"id": "h042", "question": "星河 净化器 的噪音是多少？", "answerable": true, "expected_docs": ["星河净化器.md"], "gold_answer": "最低 25 分贝"}
+{"id": "h043", "question": "星澜 Headphone Lite 的续航是多少？", "answerable": true, "expected_docs": ["星澜HeadphoneLite.md"], "gold_answer": "单次 6 小时"}
+{"id": "h044", "question": "星域 Pad Plus 的处理器是多少？", "answerable": true, "expected_docs": ["星域PadPlus.md"], "gold_answer": "骁龙 8 Gen 3"}
+{"id": "h045", "question": "星澜 Sound SE 的价格是多少？", "answerable": true, "expected_docs": ["星澜SoundSE.md"], "gold_answer": "1299 元"}
+{"id": "h046", "question": "星澜 Buds 标准版 的防水等级是多少？", "answerable": true, "expected_docs": ["星澜BudsStandard.md"], "gold_answer": "IPX4"}
+{"id": "h047", "question": "星云 Note Lite 的价格是多少？", "answerable": true, "expected_docs": ["星云NoteLite.md"], "gold_answer": "1599 元"}
+{"id": "h048", "question": "星河 洗衣机 Mini 的能效等级是多少？", "answerable": true, "expected_docs": ["星河洗衣机Mini.md"], "gold_answer": "二级能效"}
+{"id": "h049", "question": "星域 Pad Pro 的屏幕是多少？", "answerable": true, "expected_docs": ["星域PadPro.md"], "gold_answer": "13.2 英寸，60Hz 刷新率"}
+{"id": "h050", "question": "星辰 X1 Pro 的电池是多少？", "answerable": true, "expected_docs": ["星辰X1Pro.md"], "gold_answer": "5000mAh"}
+{"id": "h051", "question": "星云 Note Air 的重量是多少？", "answerable": true, "expected_docs": ["星云NoteAir.md"], "gold_answer": "198g"}
+{"id": "h052", "question": "星域 Air Air 的质保年限是多少？", "answerable": true, "expected_docs": ["星域AirAir.md"], "gold_answer": "整机保修 2 年"}
+{"id": "h053", "question": "星河 空调 Pro 的价格是多少？", "answerable": true, "expected_docs": ["星河空调Pro.md"], "gold_answer": "3299 元"}
+{"id": "h054", "question": "星河 空调 Air 的能效等级是多少？", "answerable": true, "expected_docs": ["星河空调Air.md"], "gold_answer": "二级能效"}
+{"id": "h055", "question": "星域 Air Plus 的重量是多少？", "answerable": true, "expected_docs": ["星域AirPlus.md"], "gold_answer": "0.99kg"}
+{"id": "h056", "question": "星云 Fold SE 的电池是多少？", "answerable": true, "expected_docs": ["星云FoldSE.md"], "gold_answer": "4500mAh"}
+{"id": "h057", "question": "星域 Pad Pro+ 的重量是多少？", "answerable": true, "expected_docs": ["星域PadProPlus.md"], "gold_answer": "560g"}
+{"id": "h058", "question": "星域 Air Lite 的内存与存储是多少？", "answerable": true, "expected_docs": ["星域AirLite.md"], "gold_answer": "16GB + 1TB"}
+{"id": "h059", "question": "星河 洗衣机 Pro 的容量是多少？", "answerable": true, "expected_docs": ["星河洗衣机Pro.md"], "gold_answer": "10kg"}
+{"id": "h060", "question": "星环 Watch Mini 的屏幕是多少？", "answerable": true, "expected_docs": ["星环WatchMini.md"], "gold_answer": "1.2 英寸 LCD"}
+{"id": "h061", "question": "星域 Air 的显卡是多少？", "answerable": true, "expected_docs": ["星域Air.md"], "gold_answer": "NVIDIA RTX 4060 8GB"}
+{"id": "h062", "question": "星云 Note 标准版 的电池是多少？", "answerable": true, "expected_docs": ["星云NoteStandard.md"], "gold_answer": "4800mAh"}
+{"id": "h063", "question": "星辰 X3 Mini 的处理器是多少？", "answerable": true, "expected_docs": ["星辰X3Mini.md"], "gold_answer": "骁龙 7 Gen 3"}
+{"id": "h064", "question": "星河 净化器 Pro 的质保年限是多少？", "answerable": true, "expected_docs": ["星河净化器Pro.md"], "gold_answer": "整机保修 2 年"}
+{"id": "h065", "question": "星河 空调 Mini 的质保年限是多少？", "answerable": true, "expected_docs": ["星河空调Mini.md"], "gold_answer": "整机保修 1 年"}
+{"id": "h066", "question": "星域 Book SE 的价格是多少？", "answerable": true, "expected_docs": ["星域BookSE.md"], "gold_answer": "9999 元"}
+{"id": "h067", "question": "星辰 X1 SE 的电池是多少？", "answerable": true, "expected_docs": ["星辰X1SE.md"], "gold_answer": "6200mAh"}
+{"id": "h068", "question": "星河 净化器 SE 的功率是多少？", "answerable": true, "expected_docs": ["星河净化器SE.md"], "gold_answer": "1200W"}
+{"id": "h069", "question": "星河 净化器 Air 的质保年限是多少？", "answerable": true, "expected_docs": ["星河净化器Air.md"], "gold_answer": "整机保修 2 年"}
+{"id": "h070", "question": "星辰 X3 Lite 的质保年限是多少？", "answerable": true, "expected_docs": ["星辰X3Lite.md"], "gold_answer": "整机保修 1 年"}
+{"id": "h071", "question": "星环 Watch Air 的续航是多少？", "answerable": true, "expected_docs": ["星环WatchAir.md"], "gold_answer": "典型模式 10 天"}
+{"id": "h072", "question": "星辰 X1 标准版 的电池是多少？", "answerable": true, "expected_docs": ["星辰X1Standard.md"], "gold_answer": "4800mAh"}
+{"id": "h073", "question": "星河 净化器 Ultra 的容量是多少？", "answerable": true, "expected_docs": ["星河净化器Ultra.md"], "gold_answer": "4 升"}
+{"id": "h074", "question": "星域 Air Pro Max+ 的处理器是多少？", "answerable": true, "expected_docs": ["星域AirProMaxPlus.md"], "gold_answer": "AMD Ryzen 7 8840U"}
+{"id": "h075", "question": "星环 Watch Pro Max+ 的防水等级是多少？", "answerable": true, "expected_docs": ["星环WatchProMaxPlus.md"], "gold_answer": "50 米防水"}
+{"id": "h076", "question": "星环 Watch Pro Max 的表体是多少？", "answerable": true, "expected_docs": ["星环WatchProMax.md"], "gold_answer": "钛合金表壳"}
+{"id": "h077", "question": "星河 洗衣机 Ultra 的价格是多少？", "answerable": true, "expected_docs": ["星河洗衣机Ultra.md"], "gold_answer": "1999 元"}
+{"id": "h078", "question": "星河 净化器 Pro Max 的质保年限是多少？", "answerable": true, "expected_docs": ["星河净化器ProMax.md"], "gold_answer": "整机保修 6 年"}
+{"id": "h079", "question": "星域 Book Pro Max 的价格是多少？", "answerable": true, "expected_docs": ["星域BookProMax.md"], "gold_answer": "13999 元"}
+{"id": "h080", "question": "星辰 X3 Pro Max 的屏幕是多少？", "answerable": true, "expected_docs": ["星辰X3ProMax.md"], "gold_answer": "6.7 英寸 LTPO OLED，144Hz 刷新率"}
+{"id": "h081", "question": "星域 Book Ultra 的价格是多少？", "answerable": true, "expected_docs": ["星域BookUltra.md"], "gold_answer": "6999 元"}
+{"id": "h082", "question": "星域 Pad Pro Max+ 的内存与存储是多少？", "answerable": true, "expected_docs": ["星域PadProMaxPlus.md"], "gold_answer": "12GB + 256GB"}
+{"id": "h083", "question": "星澜 Buds Pro Max+ 的续航是多少？", "answerable": true, "expected_docs": ["星澜BudsProMaxPlus.md"], "gold_answer": "单次 40 小时"}
+{"id": "h084", "question": "星辰 X3 Pro Max+ 的快充是多少？", "answerable": true, "expected_docs": ["星辰X3ProMaxPlus.md"], "gold_answer": "支持 80W 有线快充"}
+{"id": "h085", "question": "星澜 Headphone Ultra 的防水等级是多少？", "answerable": true, "expected_docs": ["星澜HeadphoneUltra.md"], "gold_answer": "IPX5"}
+{"id": "h086", "question": "星环 Watch Ultra 的续航是多少？", "answerable": true, "expected_docs": ["星环WatchUltra.md"], "gold_answer": "典型模式 14 天"}
+{"id": "h087", "question": "星云 Fold Pro Max 的内存与存储是多少？", "answerable": true, "expected_docs": ["星云FoldProMax.md"], "gold_answer": "16GB + 512GB"}
+{"id": "h088", "question": "星澜 Headphone Pro Max+ 的价格是多少？", "answerable": true, "expected_docs": ["星澜HeadphoneProMaxPlus.md"], "gold_answer": "199 元"}
+{"id": "h089", "question": "星域 Pad Ultra 的重量是多少？", "answerable": true, "expected_docs": ["星域PadUltra.md"], "gold_answer": "682g"}
+{"id": "h090", "question": "星云 Note Ultra 的电池是多少？", "answerable": true, "expected_docs": ["星云NoteUltra.md"], "gold_answer": "4500mAh"}
+{"id": "h091", "question": "星河 空调 Pro Max 的功率是多少？", "answerable": true, "expected_docs": ["星河空调ProMax.md"], "gold_answer": "3500W"}
+{"id": "h092", "question": "星河 洗衣机 Pro Max+ 的噪音是多少？", "answerable": true, "expected_docs": ["星河洗衣机ProMaxPlus.md"], "gold_answer": "最低 22 分贝"}
+{"id": "h093", "question": "星云 Fold Pro+ 和 星云 Fold Mini 的电池分别是多少？请两款都给出。", "answerable": true, "expected_docs": ["星云FoldMini.md", "星云FoldProPlus.md"], "gold_answer": "星云 Fold Pro+：6200mAh；星云 Fold Mini：4800mAh"}
+{"id": "h094", "question": "星河 净化器 Pro Max 和 星河 净化器 Pro Max+ 的价格分别是多少？请两款都给出。", "answerable": true, "expected_docs": ["星河净化器ProMax.md", "星河净化器ProMaxPlus.md"], "gold_answer": "星河 净化器 Pro Max：1299 元；星河 净化器 Pro Max+：399 元"}
+{"id": "h095", "question": "星澜 Sound SE 和 星澜 Sound Plus 的价格分别是多少？请两款都给出。", "answerable": true, "expected_docs": ["星澜SoundPlus.md", "星澜SoundSE.md"], "gold_answer": "星澜 Sound SE：1299 元；星澜 Sound Plus：1899 元"}
+{"id": "h096", "question": "星河 洗衣机 和 星河 洗衣机 Air 的功率分别是多少？请两款都给出。", "answerable": true, "expected_docs": ["星河洗衣机.md", "星河洗衣机Air.md"], "gold_answer": "星河 洗衣机：3500W；星河 洗衣机 Air：1200W"}
+{"id": "h097", "question": "星澜 Sound Lite 和 星澜 Sound Air 的扬声器分别是多少？请两款都给出。", "answerable": true, "expected_docs": ["星澜SoundAir.md", "星澜SoundLite.md"], "gold_answer": "星澜 Sound Lite：60W 输出；星澜 Sound Air：20W 低音 + 2×10W 高音"}
+{"id": "h098", "question": "星环 Watch 和 星环 Watch SE 的价格分别是多少？请两款都给出。", "answerable": true, "expected_docs": ["星环Watch.md", "星环WatchSE.md"], "gold_answer": "星环 Watch：2299 元；星环 Watch SE：399 元"}
+{"id": "h099", "question": "星域 Book Pro 和 星域 Book Ultra 的处理器分别是多少？请两款都给出。", "answerable": true, "expected_docs": ["星域BookPro.md", "星域BookUltra.md"], "gold_answer": "星域 Book Pro：AMD Ryzen 7 8840U；星域 Book Ultra：Intel Core Ultra 5"}
+{"id": "h100", "question": "星河 空调 和 星河 空调 Pro 的噪音分别是多少？请两款都给出。", "answerable": true, "expected_docs": ["星河空调.md", "星河空调Pro.md"], "gold_answer": "星河 空调：最低 33 分贝；星河 空调 Pro：最低 25 分贝"}
+{"id": "h101", "question": "星辰 X1 Lite 和 星辰 X1 SE 的处理器分别是多少？请两款都给出。", "answerable": true, "expected_docs": ["星辰X1Lite.md", "星辰X1SE.md"], "gold_answer": "星辰 X1 Lite：骁龙 8 Gen 2；星辰 X1 SE：骁龙 8 Gen 3"}
+{"id": "h102", "question": "星澜 Headphone Pro 和 星澜 Headphone Pro Max+ 的价格分别是多少？请两款都给出。", "answerable": true, "expected_docs": ["星澜HeadphonePro.md", "星澜HeadphoneProMaxPlus.md"], "gold_answer": "星澜 Headphone Pro：599 元；星澜 Headphone Pro Max+：199 元"}
+{"id": "h103", "question": "星环 Watch Pro 和 星环 Watch Pro Max+ 的质保年限分别是多少？请两款都给出。", "answerable": true, "expected_docs": ["星环WatchPro.md", "星环WatchProMaxPlus.md"], "gold_answer": "星环 Watch Pro：整机保修 2 年；星环 Watch Pro Max+：整机保修 1 年"}
+{"id": "h104", "question": "星域 Pad Pro 和 星域 Pad 标准版 的电池分别是多少？请两款都给出。", "answerable": true, "expected_docs": ["星域PadPro.md", "星域PadStandard.md"], "gold_answer": "星域 Pad Pro：5100mAh；星域 Pad 标准版：8600mAh"}
+{"id": "h105", "question": "星云 Fold Pro 和 星云 Fold Lite 的重量分别是多少？请两款都给出。", "answerable": true, "expected_docs": ["星云FoldLite.md", "星云FoldPro.md"], "gold_answer": "星云 Fold Pro：212g；星云 Fold Lite：205g"}
+{"id": "h106", "question": "星澜 Sound Pro+ 和 星澜 Sound Ultra 的价格分别是多少？请两款都给出。", "answerable": true, "expected_docs": ["星澜SoundProPlus.md", "星澜SoundUltra.md"], "gold_answer": "星澜 Sound Pro+：399 元；星澜 Sound Ultra：1299 元"}
+{"id": "h107", "question": "星环 Watch Plus 和 星环 Watch 标准版 的价格分别是多少？请两款都给出。", "answerable": true, "expected_docs": ["星环WatchPlus.md", "星环WatchStandard.md"], "gold_answer": "星环 Watch Plus：199 元；星环 Watch 标准版：2299 元"}
+{"id": "h108", "question": "星域 Book Pro+ 和 星域 Book Mini 的价格分别是多少？请两款都给出。", "answerable": true, "expected_docs": ["星域BookMini.md", "星域BookProPlus.md"], "gold_answer": "星域 Book Pro+：9999 元；星域 Book Mini：6999 元"}
+{"id": "h109", "question": "星河 净化器 Pro Max 和 星河 净化器 SE 的噪音分别是多少？请两款都给出。", "answerable": true, "expected_docs": ["星河净化器ProMax.md", "星河净化器SE.md"], "gold_answer": "星河 净化器 Pro Max：最低 18 分贝；星河 净化器 SE：最低 25 分贝"}
+{"id": "h110", "question": "星河 洗衣机 Pro+ 和 星河 洗衣机 Air 的能效等级分别是多少？请两款都给出。", "answerable": true, "expected_docs": ["星河洗衣机Air.md", "星河洗衣机ProPlus.md"], "gold_answer": "星河 洗衣机 Pro+：二级能效；星河 洗衣机 Air：一级能效"}
+{"id": "h111", "question": "星域 Book Pro 和 星域 Book SE 的重量分别是多少？请两款都给出。", "answerable": true, "expected_docs": ["星域BookPro.md", "星域BookSE.md"], "gold_answer": "星域 Book Pro：1.99kg；星域 Book SE：0.99kg"}
+{"id": "h112", "question": "星辰 X1 和 星辰 X1 Pro Max+ 的内存与存储分别是多少？请两款都给出。", "answerable": true, "expected_docs": ["星辰X1.md", "星辰X1ProMaxPlus.md"], "gold_answer": "星辰 X1：16GB + 512GB；星辰 X1 Pro Max+：8GB + 256GB"}
+{"id": "h113", "question": "星域 Air Pro+ 和 星域 Air Air 的处理器分别是多少？请两款都给出。", "answerable": true, "expected_docs": ["星域AirAir.md", "星域AirProPlus.md"], "gold_answer": "星域 Air Pro+：Intel Core Ultra 5；星域 Air Air：AMD Ryzen 7 8840U"}
+{"id": "h114", "question": "星河 洗衣机 Ultra 和 星河 洗衣机 标准版 的能效等级分别是多少？请两款都给出。", "answerable": true, "expected_docs": ["星河洗衣机Standard.md", "星河洗衣机Ultra.md"], "gold_answer": "星河 洗衣机 Ultra：二级能效；星河 洗衣机 标准版：一级能效"}
+{"id": "h115", "question": "星环 Watch 和 星环 Watch Pro+ 的防水等级分别是多少？请两款都给出。", "answerable": true, "expected_docs": ["星环Watch.md", "星环WatchProPlus.md"], "gold_answer": "星环 Watch：50 米防水；星环 Watch Pro+：100 米防水"}
+{"id": "h116", "question": "星辰 X1 SE 和 星辰 X1 Plus 的快充分别是多少？请两款都给出。", "answerable": true, "expected_docs": ["星辰X1Plus.md", "星辰X1SE.md"], "gold_answer": "星辰 X1 SE：支持 120W 有线快充；星辰 X1 Plus：支持 150W 有线快充"}
+{"id": "h117", "question": "星辰 X1 Pro+ 和 星辰 X1 Ultra 的质保年限分别是多少？请两款都给出。", "answerable": true, "expected_docs": ["星辰X1ProPlus.md", "星辰X1Ultra.md"], "gold_answer": "星辰 X1 Pro+：整机保修 2 年；星辰 X1 Ultra：整机保修 1 年"}
+{"id": "h118", "question": "星云 Fold Plus 和 星云 Fold 标准版 的重量分别是多少？请两款都给出。", "answerable": true, "expected_docs": ["星云FoldPlus.md", "星云FoldStandard.md"], "gold_answer": "星云 Fold Plus：188g；星云 Fold 标准版：212g"}
+{"id": "h119", "question": "星澜 Sound 和 星澜 Sound SE 的连接分别是多少？请两款都给出。", "answerable": true, "expected_docs": ["星澜Sound.md", "星澜SoundSE.md"], "gold_answer": "星澜 Sound：Wi-Fi 双频 + 蓝牙 5.3；星澜 Sound SE：Wi-Fi 双频 + 蓝牙 5.3 + 光纤"}
+{"id": "h120", "question": "星域 Book Pro 和 星域 Book Pro+ 的屏幕分别是多少？请两款都给出。", "answerable": true, "expected_docs": ["星域BookPro.md", "星域BookProPlus.md"], "gold_answer": "星域 Book Pro：15.6 英寸 2.8K，60Hz；星域 Book Pro+：15.6 英寸 3.2K，165Hz"}
+{"id": "h121", "question": "星河 洗衣机 和 星河 洗衣机 Pro+ 的噪音分别是多少？请两款都给出。", "answerable": true, "expected_docs": ["星河洗衣机.md", "星河洗衣机ProPlus.md"], "gold_answer": "星河 洗衣机：最低 18 分贝；星河 洗衣机 Pro+：最低 22 分贝"}
+{"id": "h122", "question": "星域 Pad Ultra 和 星域 Pad Plus 的重量分别是多少？请两款都给出。", "answerable": true, "expected_docs": ["星域PadPlus.md", "星域PadUltra.md"], "gold_answer": "星域 Pad Ultra：682g；星域 Pad Plus：560g"}
+{"id": "h123", "question": "星域 Air Ultra 和 星域 Air Plus 的重量分别是多少？请两款都给出。", "answerable": true, "expected_docs": ["星域AirPlus.md", "星域AirUltra.md"], "gold_answer": "星域 Air Ultra：1.59kg；星域 Air Plus：0.99kg"}
+{"id": "h124", "question": "星云 Fold SE 和 星云 Fold Mini 的电池分别是多少？请两款都给出。", "answerable": true, "expected_docs": ["星云FoldMini.md", "星云FoldSE.md"], "gold_answer": "星云 Fold SE：4500mAh；星云 Fold Mini：4800mAh"}
+{"id": "h125", "question": "星河 洗衣机 Pro 和 星河 洗衣机 Air 的容量分别是多少？请两款都给出。", "answerable": true, "expected_docs": ["星河洗衣机Air.md", "星河洗衣机Pro.md"], "gold_answer": "星河 洗衣机 Pro：10kg；星河 洗衣机 Air：1.5 匹"}
+{"id": "h126", "question": "星环 Watch Pro 和 星环 Watch Pro+ 的表体分别是多少？请两款都给出。", "answerable": true, "expected_docs": ["星环WatchPro.md", "星环WatchProPlus.md"], "gold_answer": "星环 Watch Pro：不锈钢表壳；星环 Watch Pro+：塑料表壳"}
+{"id": "h127", "question": "星河 空调 Pro 和 星河 空调 Ultra 的质保年限分别是多少？请两款都给出。", "answerable": true, "expected_docs": ["星河空调Pro.md", "星河空调Ultra.md"], "gold_answer": "星河 空调 Pro：整机保修 6 年；星河 空调 Ultra：整机保修 1 年"}
+{"id": "h128", "question": "星河 洗衣机 Ultra 和 星河 洗衣机 Plus 的噪音分别是多少？请两款都给出。", "answerable": true, "expected_docs": ["星河洗衣机Plus.md", "星河洗衣机Ultra.md"], "gold_answer": "星河 洗衣机 Ultra：最低 18 分贝；星河 洗衣机 Plus：最低 33 分贝"}
+{"id": "h129", "question": "星域 Book Pro Max 和 星域 Book Lite 的重量分别是多少？请两款都给出。", "answerable": true, "expected_docs": ["星域BookLite.md", "星域BookProMax.md"], "gold_answer": "星域 Book Pro Max：1.59kg；星域 Book Lite：2.6kg"}
+{"id": "h130", "question": "星云 Note Pro Max 和 星云 Note SE 的处理器分别是多少？请两款都给出。", "answerable": true, "expected_docs": ["星云NoteProMax.md", "星云NoteSE.md"], "gold_answer": "星云 Note Pro Max：天玑 8300；星云 Note SE：骁龙 8 Gen 3"}
+{"id": "h131", "question": "星澜 Sound Mini 和 星澜 Sound 标准版 的价格分别是多少？请两款都给出。", "answerable": true, "expected_docs": ["星澜SoundMini.md", "星澜SoundStandard.md"], "gold_answer": "星澜 Sound Mini：199 元；星澜 Sound 标准版：1899 元"}
+{"id": "h132", "question": "星河 空调 Pro+ 和 星河 空调 标准版 的价格分别是多少？请两款都给出。", "answerable": true, "expected_docs": ["星河空调ProPlus.md", "星河空调Standard.md"], "gold_answer": "星河 空调 Pro+：1999 元；星河 空调 标准版：399 元"}
+{"id": "h133", "question": "星河 洗衣机 Lite 的用户评分是多少？", "answerable": false, "expected_docs": [], "gold_answer": ""}
+{"id": "h134", "question": "星云 Note Ultra 的售后网点数量是多少？", "answerable": false, "expected_docs": [], "gold_answer": ""}
+{"id": "h135", "question": "星云 Fold Mini 的防水等级是多少？", "answerable": false, "expected_docs": [], "gold_answer": ""}
+{"id": "h136", "question": "星域 Air 标准版 的用户评分是多少？", "answerable": false, "expected_docs": [], "gold_answer": ""}
+{"id": "h137", "question": "星河 净化器 Mini 的防水等级是多少？", "answerable": false, "expected_docs": [], "gold_answer": ""}
+{"id": "h138", "question": "星辰 X1 SE 的产地是多少？", "answerable": false, "expected_docs": [], "gold_answer": ""}
+{"id": "h139", "question": "星域 Book Air 的产地是多少？", "answerable": false, "expected_docs": [], "gold_answer": ""}
+{"id": "h140", "question": "星澜 Buds Lite 的月销量是多少？", "answerable": false, "expected_docs": [], "gold_answer": ""}
+{"id": "h141", "question": "星域 Air SE 的售后网点数量是多少？", "answerable": false, "expected_docs": [], "gold_answer": ""}
+{"id": "h142", "question": "星河 洗衣机 Plus 的用户评分是多少？", "answerable": false, "expected_docs": [], "gold_answer": ""}
+{"id": "h143", "question": "星河 空调 Pro Max+ 的上市年份是多少？", "answerable": false, "expected_docs": [], "gold_answer": ""}
+{"id": "h144", "question": "星河 洗衣机 的月销量是多少？", "answerable": false, "expected_docs": [], "gold_answer": ""}
+{"id": "h145", "question": "星辰 X3 Pro+ 的用户评分是多少？", "answerable": false, "expected_docs": [], "gold_answer": ""}
+{"id": "h146", "question": "星域 Pad 的产地是多少？", "answerable": false, "expected_docs": [], "gold_answer": ""}
+{"id": "h147", "question": "星澜 Headphone Mini 的售后网点数量是多少？", "answerable": false, "expected_docs": [], "gold_answer": ""}
+{"id": "h148", "question": "星河 空调 Plus 的防水等级是多少？", "answerable": false, "expected_docs": [], "gold_answer": ""}
+{"id": "h149", "question": "星辰 X3 Lite 的产地是多少？", "answerable": false, "expected_docs": [], "gold_answer": ""}
+{"id": "h150", "question": "星云 Fold Pro+ 的售后网点数量是多少？", "answerable": false, "expected_docs": [], "gold_answer": ""}
+{"id": "h151", "question": "星域 Pad 标准版 的用户评分是多少？", "answerable": false, "expected_docs": [], "gold_answer": ""}
+{"id": "h152", "question": "星河 洗衣机 Pro Max 的产地是多少？", "answerable": false, "expected_docs": [], "gold_answer": ""}
+{"id": "h153", "question": "星河 洗衣机 Max Ultra Pro 的价格是多少？", "answerable": false, "expected_docs": [], "gold_answer": ""}
+{"id": "h154", "question": "星域 Air Max Ultra Pro 的价格是多少？", "answerable": false, "expected_docs": [], "gold_answer": ""}
+{"id": "h155", "question": "星辰 X1 Max Ultra Pro 的价格是多少？", "answerable": false, "expected_docs": [], "gold_answer": ""}
+{"id": "h156", "question": "星河 净化器 Max Ultra Pro 的价格是多少？", "answerable": false, "expected_docs": [], "gold_answer": ""}
+{"id": "h157", "question": "星辰 X1 Max Ultra Pro 的价格是多少？", "answerable": false, "expected_docs": [], "gold_answer": ""}
+{"id": "h158", "question": "星河 空调 Max Ultra Pro 的价格是多少？", "answerable": false, "expected_docs": [], "gold_answer": ""}
+{"id": "h159", "question": "星河 洗衣机 Max Ultra Pro 的价格是多少？", "answerable": false, "expected_docs": [], "gold_answer": ""}
+{"id": "h160", "question": "星云 Fold Max Ultra Pro 的价格是多少？", "answerable": false, "expected_docs": [], "gold_answer": ""}
+{"id": "h161", "question": "星辰 X3 Max Ultra Pro 的价格是多少？", "answerable": false, "expected_docs": [], "gold_answer": ""}
+{"id": "h162", "question": "星域 Air Max Ultra Pro 的价格是多少？", "answerable": false, "expected_docs": [], "gold_answer": ""}
+{"id": "h163", "question": "星澜 Headphone Max Ultra Pro 的价格是多少？", "answerable": false, "expected_docs": [], "gold_answer": ""}
+{"id": "h164", "question": "星辰 X2 Max Ultra Pro 的价格是多少？", "answerable": false, "expected_docs": [], "gold_answer": ""}
+{"id": "h165", "question": "星云 Note Max Ultra Pro 的价格是多少？", "answerable": false, "expected_docs": [], "gold_answer": ""}
+{"id": "h166", "question": "星澜 Buds Max Ultra Pro 的价格是多少？", "answerable": false, "expected_docs": [], "gold_answer": ""}
+{"id": "h167", "question": "星云 Note Max Ultra Pro 的价格是多少？", "answerable": false, "expected_docs": [], "gold_answer": ""}
+{"id": "h168", "question": "星域 Book Max Ultra Pro 的价格是多少？", "answerable": false, "expected_docs": [], "gold_answer": ""}
+{"id": "h169", "question": "星域 Pad Max Ultra Pro 的价格是多少？", "answerable": false, "expected_docs": [], "gold_answer": ""}
+{"id": "h170", "question": "星澜 Buds Max Ultra Pro 的价格是多少？", "answerable": false, "expected_docs": [], "gold_answer": ""}
+{"id": "h171", "question": "星域 Air Max Ultra Pro 的价格是多少？", "answerable": false, "expected_docs": [], "gold_answer": ""}
+{"id": "h172", "question": "星澜 Headphone Max Ultra Pro 的价格是多少？", "answerable": false, "expected_docs": [], "gold_answer": ""}

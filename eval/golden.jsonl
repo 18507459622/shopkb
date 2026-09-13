@@ -24,3 +24,19 @@
 {"id":"q24","question":"星辰 X1 Pro 是哪一年发布的？","answerable":false,"expected_docs":[],"gold_answer":""}
 {"id":"q25","question":"智能手表的表带可以单独购买吗？","answerable":false,"expected_docs":[],"gold_answer":""}
 {"id":"q26","question":"星澜耳机的音质测评得分是多少？","answerable":false,"expected_docs":[],"gold_answer":""}
+{"id":"q27","question":"星域 Pad Pro 12.9 的价格是多少？","answerable":true,"expected_docs":["平板电脑.md"],"gold_answer":"16GB+512GB 版本 5499 元，16GB+1TB 版本 6299 元"}
+{"id":"q28","question":"星域 Pad Air 的重量是多少？","answerable":true,"expected_docs":["平板电脑.md"],"gold_answer":"460g"}
+{"id":"q29","question":"星澜 Sound Pro 的价格是多少？","answerable":true,"expected_docs":["智能音箱.md"],"gold_answer":"699 元"}
+{"id":"q30","question":"星澜 Sound Max 支持杜比全景声吗？","answerable":true,"expected_docs":["智能音箱.md"],"gold_answer":"支持杜比全景声"}
+{"id":"q31","question":"星域 View 32 Curved 的刷新率是多少？","answerable":true,"expected_docs":["显示器.md"],"gold_answer":"144Hz"}
+{"id":"q32","question":"星域 View 27 的质保期是多久？","answerable":true,"expected_docs":["显示器.md"],"gold_answer":"整机保修 3 年"}
+{"id":"q33","question":"星河 Router Pro 6E 多少钱？","answerable":true,"expected_docs":["路由器.md"],"gold_answer":"899 元"}
+{"id":"q34","question":"星河 Mesh 全屋套装覆盖多大面积？","answerable":true,"expected_docs":["路由器.md"],"gold_answer":"约 300 平方米"}
+{"id":"q35","question":"星澜 Power 20000 Pro 的输出功率是多少？","answerable":true,"expected_docs":["移动电源.md"],"gold_answer":"65W 双向快充"}
+{"id":"q36","question":"星域 M3 无线鼠标的重量是多少？","answerable":true,"expected_docs":["键盘鼠标.md"],"gold_answer":"63g"}
+{"id":"q37","question":"星河 Lock Pro 3D 支持人脸解锁吗？","answerable":true,"expected_docs":["智能门锁.md"],"gold_answer":"支持 3D 结构光人脸解锁"}
+{"id":"q38","question":"金卡会员有什么权益？","answerable":true,"expected_docs":["会员与积分政策.md"],"gold_answer":"95 折、优先发货与延长保修 1 年"}
+{"id":"q39","question":"积分可以抵扣多少钱？","answerable":true,"expected_docs":["会员与积分政策.md"],"gold_answer":"100 积分可抵扣 1 元，单笔订单最多抵扣订单金额的 10%"}
+{"id":"q40","question":"优惠券可以和积分一起用吗？","answerable":true,"expected_docs":["会员与积分政策.md"],"gold_answer":"不可与积分抵扣同时使用"}
+{"id":"q41","question":"星域 View 27 的响应时间是多少毫秒？","answerable":false,"expected_docs":[],"gold_answer":""}
+{"id":"q42","question":"星河 Lock S1 的防水等级是多少？","answerable":false,"expected_docs":[],"gold_answer":""}

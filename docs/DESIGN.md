@@ -3,7 +3,7 @@
 > 定位：可写进简历、经得起面试深挖的**生产级** LangChain RAG 项目，而非"能跑通的毕设"。
 > 本文档是系统设计的唯一权威（Single Source of Truth），所有技术选型均附理由（decision record），可作为开发蓝图，也可作为面试逐条讲解的决策记录。
 
-> **当前实现状态（截至 2026-09）**：核心链路已跑通，本地零基础设施即可运行（SQLite + Milvus Lite）。已实现：Auth 全套（argon2id/JWT/refresh 旋转/改密）、KB 上传入库（解析→切分→embed→Milvus）、混合检索 + 门控、流式 SSE + 结构化引文、多用户多会话持久化、前端「科技蓝紫玻璃拟态」UI、登录输入校验、无关问题 LLM 兜底引导、歧义追问澄清、检索过程可视化。规划中：Redis/ARQ、bge 重排、可观测三件套、集成测试与离线 eval、CI/CD（见 §10）。
+> **当前实现状态（截至 2026-09）**：核心链路已跑通，本地零基础设施即可运行（SQLite + Milvus Lite）。已实现：Auth 全套（argon2id/JWT/refresh 旋转/改密）、KB 上传入库（解析→切分→embed→Milvus）、混合检索 + 门控、流式 SSE + 结构化引文、多用户多会话持久化、前端「科技蓝紫玻璃拟态」UI、登录输入校验、无关问题 LLM 兜底引导、歧义追问澄清、检索过程可视化、**离线评测体系 v2**（42 条金标 / 双层解耦 / 门禁化退出码 / 6 类失败归因 / 门控阈值扫描，见 §6.9）。规划中：Redis/ARQ、bge 重排、可观测三件套、集成测试、CI/CD（见 §10）。
 
 ## 1. 目标与需求
 
@@ -82,7 +82,9 @@ shopkb/
 │  │  └─ rag/                      # 纯 Python 自研类（可单测/离线 eval 复用）
 │  └─ tests/{unit,integration,eval}/
 ├─ frontend/src/  api/ types/ stores/ composables/ components/ views/{,admin}/
-├─ eval/  data/golden.jsonl  scripts/
+├─ eval/                            # 离线评测（corpus/ golden.jsonl cases_*.jsonl RESULTS.md）
+│  ├─ retrieval.py e2e.py sweep.py features.py   # 检索层 / 端到端 / 阈值扫描 / 功能级
+│  └─ metrics.py gate.py fakes.py                # 指标 / 门禁 / 离线替身
 ├─ deploy/  grafana/dashboards/rag.json  nginx.conf  runbook-*.md
 └─ .github/workflows/  ci.yml eval-nightly.yml deploy.yml
 ```
@@ -157,11 +159,32 @@ System prompt：只依据 context；数字逐字出自原文；不足→"知识�
 ### 6.8 引文（结构化数据）
 top6 编号注入；生成后引文清洗（仅保留真实编号）；持久化 sources_json。
 
-### 6.9 评测（双层解耦）
-金标集 ~150 条（人工，60% 单事实/20% 多源/10% 条件数值/10% 不可答）。
-- 检索层：Recall@5/10、MRR、NDCG；参数矩阵。
-- 端到端：claim-level faithfulness / 引文准确率 / 不可答不编造率=1.0。
-- CI gate：Recall@10≥0.9、faithfulness≥0.85、no-fabrication==1.0。
+### 6.9 评测（双层解耦 + 门禁化，v2 已实现）
+
+脚本：`eval/retrieval.py`（检索层）、`eval/e2e.py`（端到端）、`eval/sweep.py`（门控阈值扫描）、
+`eval/features.py`（多轮改写 / 歧义追问 / 引文清洗）；共享模块 `eval/metrics.py`（确定性指标）、
+`eval/gate.py`（阈值与退出码）、`eval/fakes.py`（离线确定性替身）。
+
+评测集：`eval/corpus/` **14 篇 → 20 chunks**（独立 collection `eval_product_kb`，不污染 `product_kb`）；
+`eval/golden.jsonl` **42 条**（34 可答 + 8 不可答）；`eval/cases_multiturn.jsonl` 8 条；`eval/cases_clarify.jsonl` 10 条。
+
+- **检索层**：Recall@5/@K、FullCoverage@5（多源问题需全部命中）、Precision@5、MRR、NDCG@K；
+  并做**指标有效性自检**（`top_k ≥ 语料规模` 时主动提示该指标本次无区分度）。
+- **端到端**：忠实度（LLM-judge）＋ **数字命中率 / 引文准确率**（确定性指标，交叉验证 judge）
+  ＋ 不可答不编造率 ＋ 漏召回率 ＋ 检索噪声率 ＋ 延迟 P50/P95。
+- **判分器 fail-closed**：judge 返回非法 JSON → 记 `judge_error` 并从分子分母剔除，
+  由 `judge_coverage ≥ 0.95` 门禁约束。（v1 的 `None → True` 默认通过会让指标**系统性高估**且无人察觉。）
+- **失败归因**：每题输出 6 类 `failure_type`（`retrieval_miss` / `retrieval_noise` /
+  `generation_hallucination` / `answer_incomplete` / `judge_error` / `fabrication`），使失败可回流到具体环节。
+- **门禁（CI gate）**：阈值集中在 `eval/gate.py`，输出 PASS/FAIL/SKIP ＋ **进程退出码**；
+  底线：Recall@5≥0.90、MRR≥0.90、FullCoverage@5≥0.85、faithfulness≥0.85、数字命中率≥0.85、
+  引文准确率≥0.95、判分覆盖率≥0.95、**no-fabrication==1.00**、改写后命中率≥0.85、
+  改写帮倒忙率≤0.05、歧义追问 F1≥0.90。
+- **阈值扫描**（`sweep.py`）：量化「可答保留率 vs 不可答拦截率」，证明两者分布**重叠**、
+  不存在完美分离阈值 → 门控只挡低相似噪声，语义拒答交生成层（结论写入 `eval/SWEEP.md`）。
+- **离线自检**：`--mock` 用确定性替身零 token 跑通全链路；`--mock-judge-garbage` 做**故障注入**，
+  断言「判分器失效 → 门禁红灯」，作为 fail-closed 的回归测试。
+- 未完成：金标扩到 150 条、claim-level faithfulness、RAGAS 对照、dense vs hybrid 对比（需 Standalone）、CI 接入。
 
 ## 7. 后端设计
 
@@ -211,7 +234,7 @@ top6 编号注入；生成后引文清洗（仅保留真实编号）；持久化
 ## 11. 面试卖点（按杀伤力排序）
 
 1. 反幻觉是架构出来的，不是一句 prompt。
-2. 离线 eval harness 驱动每个配置决策（参数矩阵 + 结果表）。
+2. 离线 eval harness **门禁化**驱动配置决策：阈值断言 + 退出码 + 6 类失败归因，并修掉判分器 fail-open（判分失效不再白送通过）；门控阈值由扫描数据决定而非拍脑袋。
 3. 混合检索 dense+BM25 + RRF 是承重墙。
 4. 入库即 async pipeline：MySQL 真源、Milvus 可重建派生索引（增量更新）。
 5. 多轮靠 query rewrite + 真会话模型。

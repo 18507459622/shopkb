@@ -35,8 +35,11 @@ class Settings(BaseSettings):
     redis_url: str = "redis://localhost:6379/0"
 
     # ---- Milvus ----
-    # 注意：不能用 MILVUS_URI 作为 env 变量名（pymilvus 会从环境全局读取并冲突）
+    # 注意：不能用 MILVUS_URI 作为 env 变量名（pymilvus 会从环境全局读取并冲突）。
+    # 同理 token 用 VECTORSTORE_TOKEN 而不是 MILVUS_TOKEN —— pymilvus 也会直接读 MILVUS_TOKEN，
+    # 见 docs/BAD_CASES.md #2「第三方库会偷读环境变量」。
     vectorstore_uri: str = "./data/milvus_lite.db"  # 本地 Lite；生产 http://host:19530
+    vectorstore_token: str = ""  # 远程集群鉴权（Zilliz Cloud: "<user>:<password>" 或 API Key）
     milvus_collection: str = "product_kb"
     milvus_dim: int = 1024
 
