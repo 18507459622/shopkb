@@ -40,7 +40,7 @@
 ```
 电商知识库 RAG 问答系统 — 面向客服坐席的接地问答与引用核查（个人开源项目）
 LangChain · Milvus · DashScope Embedding · DeepSeek · FastAPI · Vue3
-🔗 github.com/18507459622/shopkb
+🔗 github.com/xianteng-zhang/shopkb
 
 面向电商客服的 RAG 问答系统：严格依据商品资料作答并附引用片段（可核查），覆盖参数查询、
 多版本比价、售后政策、多轮追问与型号歧义澄清 5 类真实问法；知识库未收录的问题明确回
@@ -65,7 +65,7 @@ LangChain · Milvus · DashScope Embedding · DeepSeek · FastAPI · Vue3
 ```
 电商知识库 RAG 问答系统 — 面向客服坐席的接地问答与引用核查（个人开源项目）
 LangChain · Milvus · DashScope Embedding · DeepSeek · FastAPI
-🔗 github.com/18507459622/shopkb
+🔗 github.com/xianteng-zhang/shopkb
 · 业务：覆盖参数查询、多版本比价、售后政策、多轮追问、型号歧义澄清 5 类电商客服问法；
   严格依据商品资料作答并附可核查引用，知识库未收录的问题明确回「未收录」而非编造
 · RAG 全链路 + 反幻觉：解析 → 中文切分 → 1024 维向量化 → 门控 → 接地生成全链路 +
