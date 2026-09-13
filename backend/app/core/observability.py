@@ -29,14 +29,14 @@
 """
 from __future__ import annotations
 
+import json
 import os
 import threading
 import time
 from contextlib import contextmanager
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 
-import structlog
 from langchain_core.callbacks import BaseCallbackHandler
 
 from app.core.logging_conf import get_logger
@@ -104,8 +104,6 @@ def _append_jsonl(record: dict) -> None:
     try:
         _TRACE_FILE.parent.mkdir(parents=True, exist_ok=True)
         with _TRACE_FILE.open("a", encoding="utf-8") as fh:
-            import json
-
             fh.write(json.dumps(record, ensure_ascii=False) + "\n")
     except OSError as exc:  # 磁盘满 / 权限不足 / 路径非法
         logger.warning("trace_sink_failed", error=repr(exc))
@@ -113,7 +111,7 @@ def _append_jsonl(record: dict) -> None:
 
 def _emit(event: dict) -> dict:
     record = {
-        "ts": datetime.now(timezone.utc).astimezone().isoformat(timespec="milliseconds"),
+        "ts": datetime.now(UTC).astimezone().isoformat(timespec="milliseconds"),
         "trace_id": new_trace(),
         **{k: _clip(v) for k, v in event.items()},
     }

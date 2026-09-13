@@ -4,9 +4,9 @@ from __future__ import annotations
 from fastapi import APIRouter, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.core import observability
 from app.core.database import get_db
 from app.core.deps import require_admin
-from app.core import observability
 from app.core.schemas import ok
 from app.models import User
 

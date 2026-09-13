@@ -23,7 +23,6 @@ from eval.metrics import (  # noqa: E402
     rate,
 )
 
-
 # ---------- 数字抽取 / 命中 ----------
 
 

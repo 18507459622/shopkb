@@ -43,3 +43,6 @@ Thumbs.db
 
 # logs
 *.log
+# 可观测性落盘的 JSONL（运行时产物，含提示词与回答，不入库）
+logs/
+backend/logs/

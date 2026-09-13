@@ -1,3 +1,0 @@
-{"ts": "2026-09-13T22:00:26.801+08:00", "trace_id": "smoke-req-001", "kind": "stage", "name": "rewrite", "ok": true, "duration_ms": 0.0, "error": "", "rewritten": true}
-{"ts": "2026-09-13T22:00:26.803+08:00", "trace_id": "smoke-req-001", "kind": "stage", "name": "retrieve", "ok": true, "duration_ms": 0.0, "error": "", "chunks": 5}
-{"ts": "2026-09-13T22:00:26.804+08:00", "trace_id": "smoke-req-001", "kind": "llm", "phase": "start", "model": "deepseek-flash", "prompt_chars": 1}
