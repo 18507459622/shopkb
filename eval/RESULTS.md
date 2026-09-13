@@ -30,7 +30,8 @@
 - **金标**：`eval/golden.jsonl` **42 条** —— 34 条可答（单事实 / 多源 / 比较 / 政策数值）+ 8 条不可答。
 - **多轮**：`eval/cases_multiturn.jsonl` 8 条，命中判定 = 期望文档 **且** 证据里出现该商品的独有参数。
 - **澄清**：`eval/cases_clarify.jsonl` 10 条（规则式，离线）。
-- **模型**：DashScope `text-embedding-v3`（检索）、DeepSeek `deepseek-v4-flash`（生成与 LLM-judge）。
+- **模型**：DashScope `text-embedding-v3`（检索）、DeepSeek `deepseek-flash`（生成与 LLM-judge）。
+  （`deepseek-v4-flash` 为该模型旧名，服务商已更名；数字为旧名下实测，2026-09 复核模型列表已无该 id。）
 
 ---
 
