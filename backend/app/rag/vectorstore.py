@@ -20,6 +20,8 @@ token 只在远程 URI 下透传 —— 本地文件模式传 token 会被 pymil
 from __future__ import annotations
 
 import logging
+import threading
+import time
 from functools import lru_cache
 from typing import Any
 
@@ -127,6 +129,9 @@ class MilvusStore:
         self.dim = dim
         self.analyzer_tokenizer = analyzer_tokenizer
         self._ranker_kw: str | None = None  # hybrid_search 的 ranker 参数名（运行时探测）
+        self._count_cache: int | None = None  # count() 的短 TTL 缓存
+        self._count_at: float = 0.0
+        self._count_lock = threading.Lock()
         # Lite 是本地文件路径；Standalone / Zilliz Cloud 是 http(s)。仅后者支持 sparse/BM25。
         self.supports_sparse = uri.startswith(("http://", "https://"))
         # token 只在远程集群下透传（本地文件模式传 token 会被 pymilvus 拒绝）
@@ -207,6 +212,40 @@ class MilvusStore:
             return [f.get("name", "") for f in desc.get("fields", [])]
         except Exception:  # noqa: BLE001
             return []
+
+    def count(self, max_age_s: float = 30.0) -> int | None:
+        """向量库里的真实条数；查询失败返回 None。
+
+        健康检查的语义要求"失败要说得出话"，所以这里不抛异常、也不返回 0 ——
+        0 是"确实为空"，None 是"问不出来"，两者必须区分。
+
+        **为什么不用 `get_collection_stats().row_count`**：它只统计**已封存段**，
+        刚写入还在增长段里的数据不算。实测踩过：重新入库后 stats 报 0，
+        但 `count(*)` 已经是 4，要 `flush()` 之后才对上。
+        用统计值做一致性检查会产生假警报，所以走 `query(count(*))`（增长段+封存段都算）。
+
+        带 30 秒缓存：`/readyz` 可能被探针高频调用，而每次 count(*) 都是一次
+        真实查询、在 Zilliz Cloud 上要计费。
+        """
+        now = time.monotonic()
+        with self._count_lock:
+            if self._count_cache is not None and now - self._count_at < max_age_s:
+                return self._count_cache
+        try:
+            if not self._client.has_collection(self.collection):
+                value: int | None = 0
+            else:
+                res = self._client.query(
+                    collection_name=self.collection, filter="", output_fields=["count(*)"]
+                )
+                value = int(res[0].get("count(*)", 0)) if res else 0
+        except Exception as exc:  # noqa: BLE001
+            logger.warning("vector count failed: %s", exc)
+            return None
+        with self._count_lock:
+            self._count_cache = value
+            self._count_at = now
+        return value
 
     def _expr(self, filters: dict[str, Any] | None) -> str | None:
         """把 dict 过滤转成 Milvus expr（值加引号）。"""

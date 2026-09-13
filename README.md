@@ -76,6 +76,42 @@
 
 **可观测性自身 fail-open**：日志写不进去（磁盘满 / 权限不足）只记一条 warning，绝不让业务请求失败；但阶段异常照常向上抛，不为了观测吞异常。两者都有测试覆盖。
 
+### 健康检查不只看「连得上」
+
+`/readyz` 除了探 DB 与 Milvus 连接，还会**对一次账**：把「关系库声明的 chunk 数」与「向量库真实条数」比一遍。
+
+```json
+{
+  "status": "ok",
+  "checks": {
+    "database": "ok",
+    "milvus": "ok",
+    "knowledge_base": "ok (24 chunks)"
+  },
+  "problems": []
+}
+```
+
+这不是为了好看。**曾经出过一次事**：`.env` 的 `VECTORSTORE_URI` 从本地 Milvus Lite 换成 Zilliz Cloud 后，应用自己的 collection 没有被重新灌数据，而 SQLite 的 `documents` 表仍然写着「已完成」——
+
+- 管理界面一切正常（它读 SQLite）
+- `/readyz` 报 `{"database":"ok","milvus":"ok"}` —— 但 **milvus 的 ok 只代表连接正常、collection 存在，不代表里面有数据**
+- 只有用户提问时才发现所有商品问题都答「暂未收录」
+
+**两个存储各说各话，而没有任何检查会告诉你。** 现在对不上会直接 503：
+
+```
+"knowledge_base": "mismatch: db declares 24, vector store has 0"   →  503 degraded
+```
+
+几个刻意的取舍：
+
+- **用 `count(*)` 而不是 `get_collection_stats().row_count`**：后者只统计**已封存段**，刚写入还在增长段里的数据不算。实测踩过 —— 重新入库后 stats 报 0 而 `count(*)` 已经是 4，要 `flush()` 之后才对上。用统计值做对账会产生假警报。
+- **`unknown` 不算失败**：向量库暂时问不出来时判失败，会让编排系统反复重启服务、放大故障。**「不确定」不等于「不健康」。**
+- **入库进行中跳过对账**：那个窗口里向量已写入但 `documents.status` 还没提交，直接比会误报。
+- **30 秒缓存**：`/readyz` 会被探针高频调用，而每次 `count(*)` 在 Zilliz Cloud 上都是一次计费查询。
+
+
 > ⚠️ `config.py` 里定义了 `langfuse_host` / `langfuse_public_key` / `langfuse_secret_key` / `sentry_dsn` 四个配置项，但**全代码库没有任何地方引用它们**（见「已知限制」）。
 > 另外指标是**单进程内存聚合**：uvicorn 多 worker 时每个 worker 各算各的，要全局数字需要外部聚合。
 
@@ -190,4 +226,5 @@ shopkb/
 - `POST /api/v1/kb/documents/upload`、`GET /kb/documents`、`DELETE /kb/documents/{id}`（admin）
 - `GET /api/v1/admin/users`、`GET /admin/stats`、`GET /admin/metrics`（admin）
 - `POST /api/v1/chat/messages/{message_id}/feedback`（回答点赞/点踩）
-- `GET /healthz`、`GET /readyz`
+- `GET /healthz`：存活探针
+- `GET /readyz`：就绪探针，含**知识库一致性对账**（见下）

@@ -13,6 +13,7 @@ from sqlalchemy import select, text
 from app.core.config import get_settings
 from app.core.database import get_session_factory, init_models
 from app.core.exceptions import DomainError
+from app.core.health import check_knowledge_base, is_problem
 from app.core.logging_conf import configure_logging, get_logger
 from app.core.middleware import RequestIDMiddleware, request_id_var
 from app.core.schemas import ErrorEnvelope
@@ -132,22 +133,46 @@ def create_app() -> FastAPI:
     @app.get("/readyz")
     async def readyz() -> JSONResponse:
         checks: dict[str, str] = {}
+        problems: list[str] = []
+
         try:
             async with get_session_factory()() as db:
                 await db.execute(text("SELECT 1"))
             checks["database"] = "ok"
         except Exception as exc:  # noqa: BLE001
             checks["database"] = f"error: {exc}"
+            problems.append("database")
+
         try:
             from app.rag.vectorstore import get_vectorstore
 
             checks["milvus"] = "ok" if get_vectorstore().ready() else "error"
         except Exception as exc:  # noqa: BLE001
             checks["milvus"] = f"error: {exc}"
-        healthy = all(v == "ok" for v in checks.values())
+        if checks["milvus"] != "ok":
+            problems.append("milvus")
+
+        # 知识库对账：关系库声明的 chunk 数 vs 向量库真实条数。
+        # 「milvus: ok」只代表连接正常、collection 存在，**不代表里面有数据**。
+        # 曾发生过向量库被换掉、SQLite 仍显示"已完成"，接口全绿而用户答不出来的情况。
+        if checks["database"] == "ok" and checks["milvus"] == "ok":
+            try:
+                verdict = await check_knowledge_base()
+                checks["knowledge_base"] = verdict
+                if is_problem(verdict):
+                    problems.append("knowledge_base")
+            except Exception as exc:  # noqa: BLE001
+                checks["knowledge_base"] = f"error: {exc}"
+                problems.append("knowledge_base")
+
+        healthy = not problems
         return JSONResponse(
             status_code=200 if healthy else 503,
-            content={"status": "ok" if healthy else "degraded", "checks": checks},
+            content={
+                "status": "ok" if healthy else "degraded",
+                "checks": checks,
+                "problems": problems,
+            },
         )
 
     return app
