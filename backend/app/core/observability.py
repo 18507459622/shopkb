@@ -55,6 +55,8 @@ _PRICE_IN = float(os.getenv("PRICE_INPUT_PER_M", "2.0"))
 _PRICE_OUT = float(os.getenv("PRICE_OUTPUT_PER_M", "8.0"))
 
 _lock = threading.Lock()
+# 单独一把锁给文件写入：不把磁盘 I/O 的延迟耦合到内存指标的更新上
+_file_lock = threading.Lock()
 
 
 def _empty() -> dict:
@@ -98,13 +100,21 @@ def _clip(value):
 
 
 def _append_jsonl(record: dict) -> None:
-    """追加一行 JSON Lines。失败只记日志，绝不向上抛 —— 可观测性是 fail-open 的。"""
+    """追加一行 JSON Lines。失败只记日志，绝不向上抛 —— 可观测性是 fail-open 的。
+
+    **写入必须持锁**：LangChain 的回调可能在多个线程里触发（流式生成 + 工具调用），
+    并发 open(..., "a") 会让两次写入的字节互相穿插，产出既不是合法 UTF-8、
+    也不是合法 JSON 的行。实测踩过：日志中间出现 `'}"}'` 这样的碎片，
+    整份文件都无法被 json / pandas 解析。
+    """
     if not _TRACE_ENABLED:
         return
     try:
         _TRACE_FILE.parent.mkdir(parents=True, exist_ok=True)
-        with _TRACE_FILE.open("a", encoding="utf-8") as fh:
-            fh.write(json.dumps(record, ensure_ascii=False) + "\n")
+        line = json.dumps(record, ensure_ascii=False) + "\n"
+        with _file_lock:
+            with _TRACE_FILE.open("a", encoding="utf-8") as fh:
+                fh.write(line)
     except OSError as exc:  # 磁盘满 / 权限不足 / 路径非法
         logger.warning("trace_sink_failed", error=repr(exc))
 

@@ -258,6 +258,42 @@ class TestFailOpen:
             pass
         assert len(read_jsonl(tmp_path)[-1]["query"]) < 500
 
+    def test_并发写入不会互相穿插(self, tmp_path):
+        """回归：文件写入必须在锁内。
+
+        LangChain 的回调可能在多个线程里触发，多线程同时 `open(..., "a")` 再 write，
+        两次写入的字节会互相穿插 —— 产出既不是合法 UTF-8、也不是合法 JSON 的行。
+        实测踩过：日志中间出现 `'}"}'` 碎片和半个汉字（首字节 0xad）。
+
+        用中文 + emoji（多字节）写，单字节内容穿插了未必看得出来。
+        """
+        import threading
+
+        n_threads, n_per_thread = 8, 40
+
+        def writer(tag: int) -> None:
+            for i in range(n_per_thread):
+                obs._emit(
+                    {
+                        "kind": "stage",
+                        "name": f"retrieve-{tag}",
+                        "query": f"罐头🥫 中文内容 {tag}-{i} 减脂核心是热量缺口",
+                    }
+                )
+
+        threads = [threading.Thread(target=writer, args=(t,)) for t in range(n_threads)]
+        for th in threads:
+            th.start()
+        for th in threads:
+            th.join()
+
+        raw = (tmp_path / "llm_trace.jsonl").read_bytes()
+        text = raw.decode("utf-8")  # 非法 UTF-8 会在这里炸
+        lines = [x for x in text.splitlines() if x.strip()]
+        assert len(lines) == n_threads * n_per_thread
+        for ln in lines:
+            json.loads(ln)  # 非法 JSON 会在这里炸
+
 
 # ---------------------------------------------------------------- trace 关联
 class TestTraceId:
