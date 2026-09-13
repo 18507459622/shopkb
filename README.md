@@ -55,16 +55,29 @@
 
 ## 可观测性
 
-| 能力 | 现状 |
-|---|---|
-| 请求级追踪 | ✅ `RequestIDMiddleware` 生成 `request_id`（也接受上游 `X-Request-ID`），存入 ContextVar 并绑定到 structlog 上下文 |
-| 响应可关联 | ✅ 响应头回写 `X-Request-ID`；所有错误响应的 envelope 里都带 `request_id` |
-| 结构化日志 | ✅ `app/core/logging_conf.py`（structlog） |
-| **LLM 调用级追踪** | ❌ 没有记录"这次调了哪个模型、耗时多少、消耗多少 token" |
-| **Token 成本统计** | ❌ 没有 |
-| **失败步骤归因** | ❌ 有 request_id 能定位到请求，但看不出失败发生在检索还是生成 |
+分两层：**请求级**（已有）与 **LLM 调用级**（新补）。
 
-> ⚠️ `config.py` 里定义了 `langfuse_host` / `langfuse_public_key` / `langfuse_secret_key` / `sentry_dsn` 四个配置项，但**全代码库没有任何地方引用它们**。这是配置承诺了不存在的可观测性——要么接上，要么删掉（见「已知限制」）。
+| 能力 | 现状 | 落点 |
+|---|---|---|
+| 请求级追踪 | ✅ 每个请求分配 `request_id`（也接受上游 `X-Request-ID`），存 ContextVar 并绑定 structlog 上下文 | `app/core/middleware.py` |
+| 响应可关联 | ✅ 响应头回写 `X-Request-ID`；所有错误 envelope 带 `request_id` | 同上 |
+| 结构化日志 | ✅ structlog（dev 控制台彩色 / prod JSON） | `app/core/logging_conf.py` |
+| **LLM 调用级追踪** | ✅ 模型名 / 耗时 / token 用量 / 异常，经 LangChain 回调自动采集 | `app/core/observability.py` |
+| **Token 成本统计** | ✅ 按可配置单价估算（`PRICE_INPUT_PER_M` / `PRICE_OUTPUT_PER_M`），**不写死价格** | 同上 |
+| **失败步骤归因** | ✅ 检索 / 改写 / 生成 / LLM 调用各自计时，失败进 `failures_by_step` | 同上 |
+| **用户是否接受结果** | ✅ `POST /api/v1/chat/messages/{message_id}/feedback` | `app/modules/chat/` |
+| 指标查询 | ✅ `GET /api/v1/admin/metrics`（仅 admin，token 成本属运营信息） | `app/modules/admin/router.py` |
+
+**trace_id 复用 `request_id`**，不另造一套 ID 体系 —— 日志里看到的 `request_id`、响应头里的 `X-Request-ID`、指标里的 `trace_id` 是同一个值，排查时不用做映射。
+
+**用 LangChain 回调而不是逐点埋点**：`ChatOpenAI` 在 pipeline（生成）与 rewriter（多轮改写）两处被调用，还有流式与非流式两种姿势，回调一次全覆盖，业务代码几乎不用改。`on_llm_end` 同时兼容 `llm_output.token_usage`（非流式常见）与 `message.usage_metadata`（流式聚合后常见）—— 只看一处会让成本统计系统性偏低。
+
+**LLM 调用同时落 JSONL**（`logs/llm_trace.jsonl`，一行一个事件，gitignore）：不依赖任何外部平台就能用 `grep` / `jq` / pandas 查问题。
+
+**可观测性自身 fail-open**：日志写不进去（磁盘满 / 权限不足）只记一条 warning，绝不让业务请求失败；但阶段异常照常向上抛，不为了观测吞异常。两者都有测试覆盖。
+
+> ⚠️ `config.py` 里定义了 `langfuse_host` / `langfuse_public_key` / `langfuse_secret_key` / `sentry_dsn` 四个配置项，但**全代码库没有任何地方引用它们**（见「已知限制」）。
+> 另外指标是**单进程内存聚合**：uvicorn 多 worker 时每个 worker 各算各的，要全局数字需要外部聚合。
 
 ## 评测
 
@@ -89,7 +102,9 @@
 3. **重排未实测**：`bge-reranker-v2-m3` 的代码路径已接入，但默认关闭、没有跑过评测，因此简历/文档里不应声称有重排增益。
 4. **高干扰语料是合成的**：型号名（星辰/星河/星环…）与参数均为程序生成，用于制造词面子串干扰，不代表真实商品分布；它证明的是**方法本身的偏差**，不是线上分布下的绝对指标。
 5. **`backend/data/` 下有运行时产物**（Milvus Lite 库、SQLite、上传文件），已在 `.gitignore` 中排除，clone 后需要重新上传文档入库。
-6. **单元测试 87 个但覆盖集中在纯函数层**（切分、引文、检索、评测指标、schema）；路由 / 鉴权 / 异步入库等需要 DB 与外部服务的路径没有自动化测试。
+6. **单元测试 116 个但覆盖集中在纯函数层**（切分、引文、检索、评测指标、schema、可观测性）；路由 / 鉴权 / 异步入库等需要 DB 与外部服务的路径没有自动化测试。
+7. **可观测性指标是单进程内存聚合**：uvicorn 多 worker 下每个 worker 各算各的，`/api/v1/admin/metrics` 只反映当前 worker。要全局数字需要接 Prometheus 或 Langfuse —— `config.py` 里预留了 `langfuse_*` 配置但尚未接线。
+8. **生成阶段的流式耗时未单独计时**：检索与改写有阶段计时，但 SSE 流式生成的耗时目前只能从 LLM 回调的 `duration_ms` 侧面看出。
 
 ## 快速开始
 
@@ -141,7 +156,7 @@ docker compose up -d --build
 
 ```bash
 cd backend
-uv run pytest tests/unit -q          # 单元测试（87 个，无外部依赖）
+uv run pytest tests/unit -q          # 单元测试（116 个，无外部依赖）
 uv run pytest tests/unit --cov=app --cov-report=html  # 覆盖率报告（生成 htmlcov/）
 uv run ruff check app tests           # 静态检查
 ```
@@ -172,5 +187,6 @@ shopkb/
 - `POST /api/v1/chat/conversations/{id}/stream`（SSE：start/token/citations/usage/done/error）
 - `GET/POST /api/v1/chat/conversations`、`GET /chat/conversations/{id}/messages`
 - `POST /api/v1/kb/documents/upload`、`GET /kb/documents`、`DELETE /kb/documents/{id}`（admin）
-- `GET /api/v1/admin/users`、`GET /admin/stats`（admin）
+- `GET /api/v1/admin/users`、`GET /admin/stats`、`GET /admin/metrics`（admin）
+- `POST /api/v1/chat/messages/{message_id}/feedback`（回答点赞/点踩）
 - `GET /healthz`、`GET /readyz`

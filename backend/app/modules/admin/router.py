@@ -6,6 +6,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.database import get_db
 from app.core.deps import require_admin
+from app.core import observability
 from app.core.schemas import ok
 from app.models import User
 
@@ -48,3 +49,14 @@ async def update_user(
 async def stats(_: User = Depends(require_admin), db: AsyncSession = Depends(get_db)):
     data = await AdminService(db).stats()
     return ok(AdminStats(**data))
+
+
+@router.get("/metrics")
+async def metrics(_: User = Depends(require_admin)):
+    """运行时可观测性指标：LLM 调用、耗时分位、token 成本、失败步骤归因。
+
+    放在 admin 下而不是公开路径，是因为 token 成本属于运营信息。
+    指标是**单进程内存聚合**：uvicorn 多 worker 时每个 worker 各算各的，
+    要全局数字需要外部聚合（见 README「已知限制」）。
+    """
+    return ok(observability.snapshot())

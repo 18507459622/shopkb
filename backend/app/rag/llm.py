@@ -6,6 +6,7 @@ from functools import lru_cache
 from langchain_openai import ChatOpenAI
 
 from app.core.config import get_settings
+from app.core.observability import TRACE_HANDLER
 
 
 @lru_cache
@@ -21,4 +22,8 @@ def get_llm() -> ChatOpenAI:
         streaming=True,
         timeout=60,
         max_retries=2,
+        # 可观测性：采集模型名 / 耗时 / token 用量 / 异常。
+        # 挂在这里而不是逐点埋点 —— pipeline（生成）与 rewriter（多轮改写）
+        # 都走这个模型，还有流式与非流式两种姿势，回调一次全覆盖。
+        callbacks=[TRACE_HANDLER],
     )

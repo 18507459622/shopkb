@@ -8,6 +8,7 @@ from __future__ import annotations
 from langchain_core.messages import BaseMessage, HumanMessage, SystemMessage
 
 from app.core.config import get_settings
+from app.core.observability import stage
 from app.rag.llm import get_llm
 from app.rag.retriever import RetrievedChunk, get_retriever
 from app.rag.rewriter import needs_rewrite, rewrite_query
@@ -97,10 +98,15 @@ class RagPipeline:
         query = question
         if history and needs_rewrite(question):
             try:
-                query = await rewrite_query(history, question)
+                # 改写是一次独立的 LLM 调用：单独计时才能看出多轮对话比单轮慢多少
+                with stage("rewrite"):
+                    query = await rewrite_query(history, question)
             except Exception:
                 query = question
-        chunks = await self.retriever.retrieve(query)
+        with stage("retrieve") as info:
+            chunks = await self.retriever.retrieve(query)
+            info["chunks"] = len(chunks)
+            info["rewritten"] = query != question
         return query, chunks
 
     def build_messages(
